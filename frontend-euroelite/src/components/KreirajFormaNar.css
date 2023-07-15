@@ -1,0 +1,100 @@
+/* KreirajFormaNar.css */
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 40px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+  width: 400px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group select {
+  appearance: none;
+  /* background-image: url("../img/png-transparent-arrow-computer-icons-fleche-angle-text-rectangle.png"); */
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding-right: 32px;
+}
+
+.form-group .input-group {
+  display: flex;
+}
+
+.form-group .input-group input[type="text"] {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.form-group button {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-group button:hover {
+  background-color: #0056b3;
+}
+
+.dobavljaci-table-container {
+  margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.dobavljaci-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dobavljaci-table th,
+.dobavljaci-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dobavljaci-table th {
+  text-align: left;
+}
+
+.dobavljaci-table tbody tr:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.dobavljaci-table .selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.selected-dobavljac {
+  margin-top: 20px;
+  font-weight: bold;
+}
