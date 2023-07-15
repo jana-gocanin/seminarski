@@ -1,0 +1,48 @@
+/* MenuForm.css */
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 800px; /* Povećajte širinu form elementa */
+  padding: 40px; /* Povećajte padding oko form elementa */
+  background-color: #e5181800;
+  border-radius: 4px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 20px; /* Povećajte razmak između labela */
+  font-size: 24px;
+}
+
+input[type="radio"] {
+  margin-right: 12px; /* Povećajte razmak između radio dugmadi */
+}
+
+button {
+  margin-top: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px; /* Povećajte veličinu slova na dugmadima */
+  padding: 16px 32px; /* Povećajte padding na dugmadima */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.heading {
+  font-size: 35px;
+}
+
+.omot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #0056b3;
+}
