@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-image: url("./img/pozadina.jpg");
+  min-height: 100vh; /* Promenjeno u min-height */
+  background-image: url("./img/novo.png");
   background-size: cover;
   background-position: center;
 }

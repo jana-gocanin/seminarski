@@ -1,40 +1,73 @@
-.sidebar-content {
-  padding: 20px;
-}
-
-.sidebar-buttons {
-  display: flex;
-  flex-direction: column;
-}
-
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   width: 200px;
-  background-color: #42505e; /* Promenite boju pozadine na plavu */
-  border-right: 1px solid #fff; /* Promenite boju okvira na belu */
-}
-
-.sidebar-buttons button {
-  margin-bottom: 10px;
-  width: 100%;
-  background-color: #fff; /* Promenite boju pozadine na belu */
-  color: #007bff; /* Promenite boju teksta na plavu */
-  border: 1px solid #fff; /* Promenite boju okvira na belu */
-  border-radius: 4px;
+  background-color: #8fb415; /* Promenite boju pozadine */
+  border-right: 50px solid #8fb415; /* Promenite boju desnog okvira */
+  box-shadow: 4px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
   cursor: pointer;
-  font-size: 18px;
-  padding: 12px;
 }
 
-.sidebar-buttons button:hover {
-  background-color: #fff; /* Promenite boju pozadine na belu */
-  color: #007bff; /* Promenite boju teksta na plavu */
-  border-color: #007bff; /* Promenite boju okvira na plavu */
+.sidebar ul {
+  width: 14em;
+  list-style-type: none;
+  margin: 0;
+  padding: 1em;
 }
 
+.sidebar a:link,
+.sidebar a:visited {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  line-height: 2.5em;
+  text-indent: 10px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 4px;
+  outline: 0 none;
+}
+
+.sidebar a:hover,
+.sidebar a:focus {
+  color: #fff;
+  background-color: #007bff; /* Promenite boju pozadine prilikom prelaska mišem */
+  text-shadow: 0 0 4px #fff;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Podešavanje prelaza */
+.sidebar,
+.sidebar * {
+  -webkit-transition: all 600ms ease;
+  -moz-transition: all 600ms ease;
+  -ms-transition: all 600ms ease;
+  -o-transition: all 600ms ease;
+  transition: all 600ms ease;
+}
+
+.sidebar button {
+  background-color: transparent;
+}
+
+.sidebar button:hover {
+  background-color: rgb(5, 60, 5);
+}
+
+.sidebar:hover {
+  left: 0;
+}
+
+.sidebar:hover ~ .form-container {
+  -webkit-transform: translateX(200px) perspective(600px) rotateY(10deg);
+  -moz-transform: translateX(200px) perspective(600px) rotateY(10deg);
+  -ms-transform: translateX(200px) perspective(600px) rotateY(10deg);
+  -o-transform: translateX(200px) perspective(600px) rotateY(10deg);
+  transform: translateX(200px) perspective(600px) rotateY(10deg);
+}
 .form-container {
   margin-left: 220px;
   padding: 20px;
@@ -44,7 +77,8 @@
 
 button {
   margin: 10px;
-  background-color: #007bff;
+  /* background-color: #007bff; */
+  background-color: #8fb415;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -63,7 +97,7 @@ h2 {
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  border-bottom: 1px dashed #4f4f59;
+  border-bottom: 1px dashed #8fb415;
   padding-bottom: 10px;
-  color: #2600ff;
+  color: #8fb415;
 }

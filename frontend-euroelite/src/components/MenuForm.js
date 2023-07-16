@@ -35,26 +35,36 @@ const MenuForm = () => {
   };
 
   return (
-    <div>
+    <div className="menu-container">
       <div className="sidebar">
         <div className="sidebar-content">
-          <div className="sidebar-buttons">
-            <button onClick={() => handleOptionChange("kreiraj")}>
-              Kreiraj narudžbenicu
-            </button>
-            <button onClick={() => handleOptionChange("izmeni")}>
-              Izmeni narudžbenicu
-            </button>
-            <button onClick={() => handleOptionChange("obrisi")}>
-              Obriši narudžbenicu
-            </button>
-            <button onClick={() => handleOptionChange("kreirajOtpremu")}>
-              Kreiraj način otpreme
-            </button>
-            <button onClick={() => handleOptionChange("izmeniOtpremu")}>
-              Izmeni način otpreme
-            </button>
-          </div>
+          <ul className="sidebar-buttons">
+            <li>
+              <button onClick={() => handleOptionChange("kreiraj")}>
+                Kreiraj narudžbenicu
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handleOptionChange("izmeni")}>
+                Izmeni narudžbenicu
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handleOptionChange("obrisi")}>
+                Obriši narudžbenicu
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handleOptionChange("kreirajOtpremu")}>
+                Kreiraj način otpreme
+              </button>
+            </li>
+            <li>
+              <button onClick={() => handleOptionChange("izmeniOtpremu")}>
+                Izmeni način otpreme
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
       <div className="form-container">{renderForm()}</div>

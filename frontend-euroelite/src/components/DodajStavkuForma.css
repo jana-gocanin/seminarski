@@ -5,8 +5,8 @@
   width: 800px;
   flex-wrap: wrap;
 
-  border-style: dashed;
+  border-style: inset;
   padding: inherit;
-  border-color: rgba(114, 111, 118, 0.37);
+  border-color: #8fb415;
   border-radius: 10%;
 }
