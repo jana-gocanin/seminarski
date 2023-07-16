@@ -1,20 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import KreirajFormaNar from "./KreirajFormaNar";
 import IzmeniFormaNar from "./IzmeniFormaNar";
 import ObrisiFormaNar from "./ObrisiFormaNar";
-import { selectOrderCase } from "../store/reducers/orderCaseSlice";
+import { selectOption } from "../store/reducers/menuSlice";
 
 const FormaNarudzbenica = () => {
-  const selectedOption = useSelector(selectOrderCase);
+  const selectedOptionRedux = useSelector((state) => state.menu.selectedOption);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  return (
-    <div>
-      {selectedOption === "kreiraj" && <KreirajFormaNar />}
-      {selectedOption === "izmeni" && <IzmeniFormaNar />}
-      {selectedOption === "obrisi" && <ObrisiFormaNar />}
-    </div>
-  );
+  const renderForm = () => {
+    switch (selectedOption) {
+      case "kreiraj":
+        return <KreirajFormaNar />;
+      case "izmeni":
+        return <IzmeniFormaNar />;
+      case "obrisi":
+        return <ObrisiFormaNar />;
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    renderForm();
+  }, [selectedOption]);
+
+  return <div>{renderForm()}</div>;
 };
 
 export default FormaNarudzbenica;

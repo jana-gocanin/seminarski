@@ -1,0 +1,12 @@
+.stavke-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 800px;
+  flex-wrap: wrap;
+
+  border-style: dashed;
+  padding: inherit;
+  border-color: rgba(114, 111, 118, 0.37);
+  border-radius: 10%;
+}

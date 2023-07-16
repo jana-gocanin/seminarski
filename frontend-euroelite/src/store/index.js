@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import orderCaseSlice from "./reducers/orderCaseSlice";
 import narudzbenicaSlice from "./reducers/narudzbenicaSlice";
+import menuSlice from "./reducers/menuSlice";
+import nacinOtpremeSlice from "./reducers/nacinOtpremeSlice";
 
 const store = configureStore({
   reducer: {
-    orderCaseSlice: orderCaseSlice,
     narudzbenica: narudzbenicaSlice,
+    menu: menuSlice,
+    nacinOtpreme: nacinOtpremeSlice,
   },
 });
 

@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectOption } from "../store/reducers/menuSlice";
 import KreirajNarudzbenicuForm from "./KreirajFormaNar";
 import IzmeniNarudzbenicuForm from "./IzmeniFormaNar";
 import ObrisiNarudzbenicuForm from "./ObrisiFormaNar";
 import "./MenuForm.css";
+import KreirajNacinOtpreme from "./KreirajNacinOtpreme";
+import IzmeniNacinOtpreme from "./IzmeniNacinOtpreme";
 
 const MenuForm = () => {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const dispatch = useDispatch();
+  const selectedOption = useSelector((state) => state.menu.selectedOption);
 
   const handleOptionChange = (option) => {
-    setSelectedOption(option);
+    dispatch(selectOption(option));
+    console.log(option);
   };
 
   const renderForm = () => {
@@ -19,6 +25,10 @@ const MenuForm = () => {
         return <IzmeniNarudzbenicuForm />;
       case "obrisi":
         return <ObrisiNarudzbenicuForm />;
+      case "kreirajOtpremu":
+        return <KreirajNacinOtpreme />;
+      case "izmeniOtpremu":
+        return <IzmeniNacinOtpreme />;
       default:
         return null;
     }
@@ -27,19 +37,23 @@ const MenuForm = () => {
   return (
     <div className="omot">
       <p className="heading">Izaberite jednu od opcija:</p>
-      <div>
+      <div className="form-buttons">
         <button onClick={() => handleOptionChange("kreiraj")}>
           Kreiraj narudžbenicu
         </button>
-      </div>
-      <div>
         <button onClick={() => handleOptionChange("izmeni")}>
           Izmeni narudžbenicu
         </button>
-      </div>
-      <div>
         <button onClick={() => handleOptionChange("obrisi")}>
           Obriši narudžbenicu
+        </button>
+      </div>
+      <div className="form-buttons">
+        <button onClick={() => handleOptionChange("kreirajOtpremu")}>
+          Kreiraj način otpreme
+        </button>
+        <button onClick={() => handleOptionChange("izmeniOtpremu")}>
+          Izmeni način otpreme
         </button>
       </div>
       {renderForm()}
