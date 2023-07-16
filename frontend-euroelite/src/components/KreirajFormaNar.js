@@ -84,6 +84,7 @@ const KreirajFormaNar = () => {
 
   return (
     <form onSubmit={handleSubmit} className="form">
+      <h2>Kreiranje narudzbenice</h2>
       <div className="form-row">
         <div className="form-group">
           <label>Broj narudžbenice:</label>

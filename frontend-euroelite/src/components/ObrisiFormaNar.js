@@ -33,6 +33,7 @@ const ObrisiFormaNar = () => {
 
   return (
     <form onSubmit={handleSubmit} className="obrisi-forma">
+      <h2>Brisanje narudzbenice</h2>
       <div className="form-row">
         <div className="form-group">
           <label>Pretrazi po broju:</label>
