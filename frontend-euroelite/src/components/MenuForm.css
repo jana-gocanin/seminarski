@@ -1,13 +1,56 @@
-/* MenuForm.css */
+.sidebar-content {
+  padding: 20px;
+}
 
-form {
+.sidebar-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 800px; /* Povećajte širinu form elementa */
-  padding: 40px; /* Povećajte padding oko form elementa */
-  background-color: #e5181800;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 200px;
+  background-color: #42505e; /* Promenite boju pozadine na plavu */
+  border-right: 1px solid #fff; /* Promenite boju okvira na belu */
+}
+
+.sidebar-buttons button {
+  margin-bottom: 10px;
+  width: 100%;
+  background-color: #fff; /* Promenite boju pozadine na belu */
+  color: #007bff; /* Promenite boju teksta na plavu */
+  border: 1px solid #fff; /* Promenite boju okvira na belu */
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 12px;
+}
+
+.sidebar-buttons button:hover {
+  background-color: #fff; /* Promenite boju pozadine na belu */
+  color: #007bff; /* Promenite boju teksta na plavu */
+  border-color: #007bff; /* Promenite boju okvira na plavu */
+}
+
+.form-container {
+  margin-left: 220px;
+  padding: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #0056b3;
+}
+
+button {
+  margin: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 23px;
+  padding: 12px;
 }
 
 label {
@@ -15,34 +58,12 @@ label {
   margin-bottom: 20px; /* Povećajte razmak između labela */
   font-size: 24px;
 }
-
-input[type="radio"] {
-  margin-right: 12px; /* Povećajte razmak između radio dugmadi */
-}
-
-button {
-  margin-top: 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 20px; /* Povećajte veličinu slova na dugmadima */
-  padding: 16px 32px; /* Povećajte padding na dugmadima */
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.heading {
-  font-size: 35px;
-}
-
-.omot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  color: #0056b3;
+h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 1px dashed #4f4f59;
+  padding-bottom: 10px;
+  color: #2600ff;
 }

@@ -35,28 +35,29 @@ const MenuForm = () => {
   };
 
   return (
-    <div className="omot">
-      <p className="heading">Izaberite jednu od opcija:</p>
-      <div className="form-buttons">
-        <button onClick={() => handleOptionChange("kreiraj")}>
-          Kreiraj narudžbenicu
-        </button>
-        <button onClick={() => handleOptionChange("izmeni")}>
-          Izmeni narudžbenicu
-        </button>
-        <button onClick={() => handleOptionChange("obrisi")}>
-          Obriši narudžbenicu
-        </button>
+    <div>
+      <div className="sidebar">
+        <div className="sidebar-content">
+          <div className="sidebar-buttons">
+            <button onClick={() => handleOptionChange("kreiraj")}>
+              Kreiraj narudžbenicu
+            </button>
+            <button onClick={() => handleOptionChange("izmeni")}>
+              Izmeni narudžbenicu
+            </button>
+            <button onClick={() => handleOptionChange("obrisi")}>
+              Obriši narudžbenicu
+            </button>
+            <button onClick={() => handleOptionChange("kreirajOtpremu")}>
+              Kreiraj način otpreme
+            </button>
+            <button onClick={() => handleOptionChange("izmeniOtpremu")}>
+              Izmeni način otpreme
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="form-buttons">
-        <button onClick={() => handleOptionChange("kreirajOtpremu")}>
-          Kreiraj način otpreme
-        </button>
-        <button onClick={() => handleOptionChange("izmeniOtpremu")}>
-          Izmeni način otpreme
-        </button>
-      </div>
-      {renderForm()}
+      <div className="form-container">{renderForm()}</div>
     </div>
   );
 };
