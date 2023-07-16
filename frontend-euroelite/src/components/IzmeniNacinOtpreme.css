@@ -1,15 +1,4 @@
-.stavke-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 800px;
-  flex-wrap: wrap;
-
-  border-style: double;
-  padding: inherit;
-  border-color: #8fb415;
-  border-radius: 10%;
-
+.izmena-container {
   height: fit-content;
   background: rgba(255, 255, 255, 0.3);
   padding: 3em;

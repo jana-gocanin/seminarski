@@ -6,13 +6,22 @@
   margin: 17px;
 }
 .obrisi-forma {
-  border-style: dashed;
+  border-style: double;
   padding: inherit;
   border-color: rgba(114, 111, 118, 0.37);
   border-radius: 10%;
   margin: 30px;
   padding: 40px;
   width: fit-content;
+
+  height: fit-content;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 3em;
+  border-radius: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
 }
 
 .obrisi-forma .pretrazi-button {

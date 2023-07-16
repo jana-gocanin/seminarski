@@ -6,13 +6,23 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: 40px;
-  width: 2000px;
+  /* width: 2000px; */
+
+  height: fit-content;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 3em;
+  border-radius: 20px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
 }
 
 .form-row {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  align-items: flex-end;
 }
 
 .form-group {

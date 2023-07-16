@@ -31,8 +31,6 @@ const KreirajFormaNar = () => {
     stavke,
   } = useSelector((state) => state.narudzbenica);
 
-  
-
   const handleBrojNarudzbeniceChange = (e) => {
     dispatch(setBrojNarudzbenice(e.target.value));
   };
@@ -142,7 +140,7 @@ const KreirajFormaNar = () => {
         <button
           type="button"
           onClick={handleIzaberiDobavljacaClick}
-        //   className="pronadji-dobavljaca-button"
+          //   className="pronadji-dobavljaca-button"
         >
           Pronadji dobavljaca
         </button>

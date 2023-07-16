@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { sacuvajNacinOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import "./IzmeniNacinOtpreme.css";
 
 const IzmeniNacinOtpreme = () => {
   const [izmenaNacinaOtpreme, setIzmenaNacinaOtpreme] = useState("");
@@ -33,7 +34,7 @@ const IzmeniNacinOtpreme = () => {
   };
 
   return (
-    <div>
+    <div className="izmena-container">
       <h2>Izmena načina otpreme</h2>
       <table>
         <thead>
