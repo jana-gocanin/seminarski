@@ -7,5 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Narudzbenica extends Model
 {
-    use HasFactory;
+    protected $fillable = ['nacin_otpreme_id', 'datum', 'rok', 'ziro_racun', 'ukupno', 'dobavljac_id'];
+
+    public function nacinOtpreme()
+    {
+        return $this->belongsTo(NacinOtpreme::class);
+    }
+
+    public function dobavljac()
+    {
+        return $this->belongsTo(Dobavljac::class);
+    }
+
+    public function stavke()
+    {
+        return $this->hasMany(StavkaNarudzbenice::class);
+    }
 }

@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class NacinOtpreme extends Model
 {
-    use HasFactory;
+    protected $table = 'nacin_otpremes';
+    protected $fillable = ['naziv_nacina'];
 }
