@@ -23,4 +23,38 @@ class Narudzbenica extends Model
     {
         return $this->hasMany(StavkaNarudzbenice::class);
     }
+//metode
+    public function izmeni($redniBroj, $novaKolicina)
+    {
+        $stavka = $this->stavke->firstWhere('id', $redniBroj);
+        
+        if ($stavka) {
+            $stavka->kolicina = $novaKolicina;
+            $stavka->save();
+        }
+    }
+
+    public function obrisi($redniBroj)
+    {
+        $stavka = $this->stavke->firstWhere('id', $redniBroj);
+        
+        if ($stavka) {
+            $stavka->delete();
+        }
+    }
+
+    public function postaviNacinOtpreme($nacinOtpremeId)
+    {
+        $nacinOtpreme = NacinOtpreme::find($nacinOtpremeId);
+        
+        if ($nacinOtpreme) {
+            $this->nacinOtpreme()->associate($nacinOtpreme);
+            $this->save();
+        }
+    }
+
+    
+
+
 }
+

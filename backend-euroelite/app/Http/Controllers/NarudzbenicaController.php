@@ -90,11 +90,18 @@ class NarudzbenicaController extends Controller
     public function postaviNacinOtpreme(Request $request)
     {
         $nacinOtpremeId = $request->input('nacinOtpreme');
-        $nacinOtpreme = NacinOtpreme::find($nacinOtpremeId);
+        //$nacinOtpreme = NacinOtpreme::find($nacinOtpremeId);
 
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $narudzbenica->nacinOtpreme()->associate($nacinOtpreme);
-        $narudzbenica->save();
+
+        if ($narudzbenica) {
+            $narudzbenica->postaviNacinOtpreme($nacinOtpremeId);
+            // Ostale akcije i povratna vrednost
+        } else {
+            // Prikazivanje greške ili odgovarajuća obrada
+        }
+        //$narudzbenica->nacinOtpreme()->associate($nacinOtpreme);
+        //$narudzbenica->save();
         // $narudzbenica = Narudzbenica::findOrFail($request->narudzbenica_id);
         // $nacinOtpreme = NacinOtpreme::findOrFail($request->nacin_otpreme_id);
         
@@ -177,6 +184,7 @@ class NarudzbenicaController extends Controller
     {
         $proizvodi = Proizvod::where('naziv_proizvoda', 'LIKE', '%' . $request->nazivProiz . '%')->get();
         
+        $this->RSProizvodi = $proizvodi;
         // Vraćanje rezultata
         return $proizvodi;
     }
@@ -202,29 +210,46 @@ class NarudzbenicaController extends Controller
         // Implementacija za čuvanje/nos narudžbenice
     }
 
-    //DOVDE SAM STALA
 
-    public function pronadjiNarudzbenicu(Request $request)
+    public function pronadjiNarudzbenicu()
     {
-        $narudzbenica = Narudzbenica::findOrFail($request->brojNar);
+        $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
         
         // Vraćanje rezultata
         return $narudzbenica;
     }
 
     public function obrisi(Request $request)
-    {
-        // Implementacija za brisanje stavke narudžbenice
-    }
+{
+    $redniBroj = $request->input('id');
 
-    public function izmeni(Request $request)
-    {
-        // Implementacija za izmenu stavke narudžbenice
-    }
+    $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
+    
 
-    public function obrisiNarudzbenicu(Request $request)
+    if ($narudzbenica) {
+        $narudzbenica->obrisi($redniBroj);
+    }else{
+        return response()->json(['message' => 'greska']);
+    }
+}
+
+public function izmeni(Request $request)
+{
+    $redniBroj = $request->input('id');
+    $novaKolicina = $request->input('novaKolicina');
+
+    $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
+    // $stavkaNarudzbenice = $narudzbenica->stavke()->where('id', $redniBroj)->first();
+
+    if ($narudzbenica) {
+        $narudzbenica->izmeni($redniBroj, $novaKolicina);
+    }else{
+        return response()->json(['message' => 'greska']);
+    }
+}
+    public function obrisiNarudzbenicu()
     {
-        $narudzbenica = Narudzbenica::findOrFail($request->brojNar);
+        $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
         
         // Brisanje narudžbenice
         $narudzbenica->delete();
@@ -235,14 +260,24 @@ class NarudzbenicaController extends Controller
 
     public function dajUkupanIznos(Request $request)
     {
-        // Implementacija za računanje ukupnog iznosa narudžbenice
+        $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
+        $stavke = $narudzbenica->stavke;
+    
+        $ukupanIznos = 0;
+    
+        foreach ($stavke as $stavka) {
+            $ukupanIznos += $stavka->iznos;
+        }
+    
+        return $ukupanIznos;
     }
 
     public function izaberiProizvod(Request $request)
     {
-        $proizvod = Proizvod::findOrFail($request->sifraProizvoda);
-        
-        // Vraćanje rezultata
+        $proizvod = Proizvod::find($id);
+
+
+        // Vraćanje izabranog dobavljača
         return $proizvod;
     }
 }
