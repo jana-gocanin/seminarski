@@ -34,7 +34,8 @@ class Narudzbenica extends Model
         
         if ($stavka) {
             $stavka->kolicina = $novaKolicina;
-            $stavka->save();
+
+            $stavka->iznos = $stavka->izracunajIznosStavke();
         }
     }
 
@@ -49,6 +50,7 @@ class Narudzbenica extends Model
 
             // Ažuriramo redne brojeve stavki nakon brisanja
             $narudzbenica->azurirajRedneBrojeve();
+            $this->dajUkupanIznos();
         }           
         return response()->json(['message' => 'Stavka uspešno obrisana.']);
     }
@@ -131,19 +133,23 @@ class Narudzbenica extends Model
 
     public function kreirajStavku(Proizvod $proizvod, $kolicina)
     {
+        $rb = $this->dajNoviRedniBr();
         // Kreiranje nove stavke narudžbenice
         $novaStavka = new StavkaNarudzbenice([
             'proizvod_id' => $proizvod->id,
             'kolicina' => $kolicina,
             'narudzbenica_id' => $this->id,
             'id'=>$this->redniBroj
-            // Dodajte ostale atribute stavke narudžbenice ovde
         ]);
 
-        $novaStavka->save();
-
+        $this->dodajUKolekciju($novaStavka);
         // Vraćanje nove stavke
         return $novaStavka;
+    }
+
+    public function dodajUKolekciju(StavkaNarudzbenice $stavka)
+    {
+        $this->stavke->push($stavka);
     }
 
 }

@@ -33,8 +33,20 @@ class DBBroker
 
     public function izaberiDobavljaca($id)
     {
-        // Pronalaženje dobavljača na osnovu ID-ja
-        return Dobavljac::find($id);
+        $dobavljac = Dobavljac::find($id);
+
+        // Ako je dobavljač pronađen, vraćamo novu instancu dobavljača
+        if ($dobavljac) {
+            return new Dobavljac([
+                'id' => $dobavljac->id,
+                'naziv_dobavljaca' => $dobavljac->naziv_dobavljaca,
+                'email_dobavljaca' => $dobavljac->email_dobavljaca,
+                // Dodajte ovde ostale atribute dobavljača ako je potrebno
+            ]);
+        }
+
+        // Ako dobavljač nije pronađen, vraćamo null
+        return null;
     }
 
     public function pronadjiProizvode($nazivProiz)
@@ -46,7 +58,21 @@ class DBBroker
     public function izaberiProizvod($id)
     {
         // Pronalaženje proizvoda na osnovu ID-ja
-        return Proizvod::find($id);
+        $proizvod = Proizvod::find($id);
+
+        // Ako je proizvod pronađen, vraćamo novu instancu proizvoda
+        if ($proizvod) {
+            return new Proizvod([
+                'id' => $proizvod->id,
+                'naziv_proizvoda' => $proizvod->naziv_proizvoda,
+                'nabavna_cena' => $proizvod->nabavna_cena,
+                'opis' => $proizvod->opis,
+                // Dodajte ovde ostale atribute proizvoda ako je potrebno
+            ]);
+        }
+
+        // Ako proizvod nije pronađen, vraćamo null
+        return null;
     }
     
     public function pokreniDBTransakciju()
@@ -60,6 +86,10 @@ class DBBroker
             // Čuvamo narudžbenicu
             $narudzbenica->save();
 
+            foreach ($narudzbenica->stavke as $stavka) {
+                $stavka->save();
+            }
+            
             // Ako je čuvanje uspešno, vraćamo true
             return true;
         } catch (\Exception $e) {
@@ -84,8 +114,21 @@ class DBBroker
         // Pronalaženje narudžbenice na osnovu ID-ja
         $narudzbenica = Narudzbenica::find($id);
 
-        // Vraćanje pronađene narudžbenice
-        return $narudzbenica;
+        if ($narudzbenica) {
+            return new Narudzbenica([
+                'id' => $narudzbenica->id,
+                'nacin_otpreme_id' => $narudzbenica->nacin_otpreme_id,
+                'datum' => $narudzbenica->datum,
+                'rok' => $narudzbenica->rok,
+                'ziro_racun' => $narudzbenica->ziro_racun,
+                'ukupno' => $narudzbenica->ukupno,
+                'dobavljac_id' => $narudzbenica->dobavljac_id,
+                // Dodajte ovde ostale atribute narudžbenice ako je potrebno
+            ]);
+        }
+    
+        // Ako narudžbenica nije pronađena, vraćamo null
+        return null;
     }
 
     public function obrisiNarudzbenicu($id)

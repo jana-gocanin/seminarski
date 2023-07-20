@@ -85,7 +85,7 @@ class NarudzbenicaController extends Controller
     public function kreirajNarudzbenicu()
     {
         $narudzbenica = new Narudzbenica();
-        $narudzbenica->save();
+        // $narudzbenica->save();
         $this->n = $narudzbenica;
     }
 
@@ -215,6 +215,7 @@ class NarudzbenicaController extends Controller
         $kolicina = $request->kolicina;
 
         $stavka = $narudzbenica->kreirajStavku($proizvod, $kolicina);
+        // $narudzbenica->dodajUKolekciju($stavka);
 
     // Izračunaj iznos stavke
     // $iznos = $proizvod->nabavna_cena * $kolicina;
@@ -255,10 +256,16 @@ class NarudzbenicaController extends Controller
 
     public function pronadjiNarudzbenicu()
     {
-        $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
-        
-        // Vraćanje rezultata
-        return $narudzbenica;
+        $narudzbenica = $this->dbBroker->pronadjiNarudzbenicu($id);
+
+        // Provera da li je narudžbenica pronađena
+        if ($narudzbenica) {
+            // Ako je pronađena, vratite je kao JSON odgovor
+            return response()->json($narudzbenica);
+        } else {
+            // Ako nije pronađena, vratite odgovarajući JSON odgovor ili izvršite odgovarajuću obradu greške
+            return response()->json(['message' => 'Narudžbenica nije pronađena.'], 404);
+        }
     }
 
     public function obrisi(Request $request)
@@ -291,13 +298,26 @@ class NarudzbenicaController extends Controller
     }
     public function obrisiNarudzbenicu()
     {
-        $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
-        
+        $this->dbBroker->pokreniDBTransakciju();
+
+    try {
         // Brisanje narudžbenice
-        $narudzbenica->delete();
-        
-        // Uspesno zavrsena akcija
-        return response()->json(['message' => 'Narudzbenica uspesno obrisana.']);
+        $ret = $this->dbBroker->obrisiNarudzbenicu($this->brojNarudzbenice);
+
+        if ($ret === true) {
+            $this->dbBroker->potvrdiDBTransakciju();
+            return response()->json(['message' => 'Uspešno obrisana narudžbenica.']);
+        } else {
+            $this->dbBroker->ponistiDBTransakciju();
+            return response()->json(['message' => 'Greška prilikom brisanja narudžbenice.'], 500);
+        }
+    } catch (\Exception $e) {
+        // Poništavanje transakcije u slučaju greške
+        $this->dbBroker->ponistiDBTransakciju();
+
+        // Vraćanje greške
+        return response()->json(['message' => 'Greška prilikom brisanja narudžbenice.'], 500);
+    }
     }
 
     public function dajUkupanIznos(Request $request)
