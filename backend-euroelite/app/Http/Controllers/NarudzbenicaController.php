@@ -27,6 +27,7 @@ class NarudzbenicaController extends Controller
         $this->RSDobavljac = null;
         $this->RSProizvodi = $this->vratiSveProizvode();
         $this->ukupno = 0.0;
+
     }
 
     private function generisiSledeciBrojNarudzbenice()
@@ -70,22 +71,27 @@ class NarudzbenicaController extends Controller
     {
         return $this->brojNarudzbenice;
     }
-    public function new()
+    // public function new()
+    // {
+    //     // Dobijanje vrednosti broja narudžbenice iz svojstva kontrolera
+    //     $brojNarudzbenice = $this->brojNarudzbenice;
+
+    //     // Kreiranje nove instance narudžbenice sa zadatim brojem narudžbenice
+    //     $narudzbenica = new Narudzbenica();
+    //     $narudzbenica->brojNar = $brojNarudzbenice;
+
+    //     // Ostale inicijalizacije
+    //     $narudzbenica->save();
+
+    //     // Vraćanje instance nove narudžbenice
+    //     //return $narudzbenica;
+    // }
+
+    public function kreirajNarudzbenicu()
     {
-        // Dobijanje vrednosti broja narudžbenice iz svojstva kontrolera
-        $brojNarudzbenice = $this->brojNarudzbenice;
-
-        // Kreiranje nove instance narudžbenice sa zadatim brojem narudžbenice
-        $narudzbenica = new Narudzbenica();
-        $narudzbenica->brojNar = $brojNarudzbenice;
-
-        // Ostale inicijalizacije
+        $narudzbenica = new Narudzbenica(['brojNar' => $this->brojNarudzbenice]);
         $narudzbenica->save();
-
-        // Vraćanje instance nove narudžbenice
-        //return $narudzbenica;
     }
-
 
     public function postaviNacinOtpreme(Request $request)
     {
@@ -127,24 +133,33 @@ class NarudzbenicaController extends Controller
     {
         $datumNarudzbenice = $request->input('datumNarudzbenice');
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $narudzbenica->datum = $datumNarudzbenice;
-        $narudzbenica->save();
+        if ($narudzbenica) {
+            $narudzbenica->postaviDatumNar($datumNarudzbenice);
+        } else {
+            // Prikazivanje greške ili odgovarajuća obrada
+        }
     }
 
     public function postaviRokIsporuke(Request $request)
     {
         $rokIsporuke = $request->input('rokIsporuke');
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $narudzbenica->rok = $rokIsporuke;
-        $narudzbenica->save();
+        if ($narudzbenica) {
+            $narudzbenica->postaviRokIsporuke($rokIsporuke);
+        } else {
+            // Prikazivanje greške ili odgovarajuća obrada
+        }
     }
 
     public function postaviZiroRacun(Request $request)
     {
         $ziroRacun = $request->input('ziroRacun');
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $narudzbenica->ziro_racun = $ziroRacun;
-        $narudzbenica->save();
+        if ($narudzbenica) {
+            $narudzbenica->postaviZiroRacun($ziroRacun);
+        } else {
+            // Prikazivanje greške ili odgovarajuća obrada
+        }
     }
 
     public function pronadjiDobavljace(Request $request)
@@ -176,8 +191,12 @@ class NarudzbenicaController extends Controller
         $dobavljac = Dobavljac::find($dobavljacId);
     
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $narudzbenica->dobavljac()->associate($dobavljac);
-        $narudzbenica->save();
+        
+        if ($dobavljac && $narudzbenica) {
+            $narudzbenica->postaviDobavljaca($dobavljac);
+        } else {
+            // Obrada greške, dobavljač i/ili narudžbenica su null
+        }
     }
 
     public function pronadjiProizvode(Request $request)
@@ -194,15 +213,18 @@ class NarudzbenicaController extends Controller
         $narudzbenica = Narudzbenica::findOrFail($request->narudzbenica_id);
         $proizvod = Proizvod::findOrFail($request->proizvod_id);
         
-        // Dodavanje stavke narudžbenice
-        $narudzbenica->stavke()->create([
-            'proizvod_id' => $proizvod->id,
-            'kolicina' => $request->kolicina,
-            // Dodajte ostale atribute stavke narudžbenice ovde
-        ]);
-        
-        // Uspesno zavrsena akcija
-        return response()->json(['message' => 'Stavka uspesno dodata.']);
+        $kolicina = $request->kolicina;
+
+        $stavka = $narudzbenica->kreirajStavku($proizvod, $kolicina);
+
+    // Izračunaj iznos stavke
+    // $iznos = $proizvod->nabavna_cena * $kolicina;
+
+    // // Dodavanje stavke narudžbenice pomoću funkcije u modelu Narudzbenica
+    // $narudzbenica->dodajStavku($proizvod, $kolicina, $iznos, $brojNarudzbenice);
+
+    // Uspesno zavrsena akcija
+    return response()->json(['message' => 'Stavka uspesno dodata.']);
     }
 
     public function zapamtiNarudzbenicu(Request $request)
@@ -220,33 +242,33 @@ class NarudzbenicaController extends Controller
     }
 
     public function obrisi(Request $request)
-{
-    $redniBroj = $request->input('id');
+    {
+        $redniBroj = $request->input('id');
 
-    $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-    
+        $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
+        
 
-    if ($narudzbenica) {
-        $narudzbenica->obrisi($redniBroj);
-    }else{
-        return response()->json(['message' => 'greska']);
+        if ($narudzbenica) {
+            $narudzbenica->obrisi($redniBroj);
+        }else{
+            return response()->json(['message' => 'greska']);
+        }
     }
-}
 
-public function izmeni(Request $request)
-{
-    $redniBroj = $request->input('id');
-    $novaKolicina = $request->input('novaKolicina');
+    public function izmeni(Request $request)
+    {
+        $redniBroj = $request->input('id');
+        $novaKolicina = $request->input('novaKolicina');
 
-    $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-    // $stavkaNarudzbenice = $narudzbenica->stavke()->where('id', $redniBroj)->first();
+        $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
+        // $stavkaNarudzbenice = $narudzbenica->stavke()->where('id', $redniBroj)->first();
 
-    if ($narudzbenica) {
-        $narudzbenica->izmeni($redniBroj, $novaKolicina);
-    }else{
-        return response()->json(['message' => 'greska']);
+        if ($narudzbenica) {
+            $narudzbenica->izmeni($redniBroj, $novaKolicina);
+        }else{
+            return response()->json(['message' => 'greska']);
+        }
     }
-}
     public function obrisiNarudzbenicu()
     {
         $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
@@ -261,15 +283,12 @@ public function izmeni(Request $request)
     public function dajUkupanIznos(Request $request)
     {
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
-        $stavke = $narudzbenica->stavke;
+
+        $ukupanIznos = $narudzbenica->dajUkupanIznos();
+        $narudzbenica->ukupno = $ukupanIznos;
+        $narudzbenica->save();
     
-        $ukupanIznos = 0;
-    
-        foreach ($stavke as $stavka) {
-            $ukupanIznos += $stavka->iznos;
-        }
-    
-        return $ukupanIznos;
+        return response()->json(['ukupan_iznos' => $ukupanIznos]);
     }
 
     public function izaberiProizvod(Request $request)
@@ -279,5 +298,19 @@ public function izmeni(Request $request)
 
         // Vraćanje izabranog dobavljača
         return $proizvod;
+    }
+
+    public function azurirajRedneBrojeve()
+    {
+        // Uzimamo sve stavke narudžbenice sortirane po rednom broju
+        $stavke = $this->stavke->sortBy('redni_broj');
+
+        // Postavljamo redne brojeve stavki po redu
+        $redniBroj = 1;
+        foreach ($stavke as $stavka) {
+            $stavka->redni_broj = $redniBroj;
+            $stavka->save();
+            $redniBroj++;
+        }
     }
 }

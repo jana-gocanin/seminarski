@@ -9,6 +9,8 @@ class StavkaNarudzbenice extends Model
 {
     protected $fillable = ['kolicina', 'iznos', 'proizvod_id', 'narudzbenica_id'];
 
+
+
     public function proizvod()
     {
         return $this->belongsTo(Proizvod::class);
@@ -17,5 +19,29 @@ class StavkaNarudzbenice extends Model
     public function narudzbenica()
     {
         return $this->belongsTo(Narudzbenica::class);
+    }
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Postavljanje vrednosti prosleđenih iz Narudzbenica konstruktora
+        $this->attributes['id'] = $attributes['id'] ?? null;
+        $this->attributes['narudzbenica_id'] = $attributes['narudzbenica_id'] ?? null;
+        $this->attributes['proizvod_id'] = $attributes['proizvod_id'] ?? null;
+        $this->attributes['kolicina'] = $attributes['kolicina'] ?? null;
+
+        // Pozivanje funkcije za izračunavanje iznosa stavke
+        $this->attributes['iznos'] = $this->izracunajIznosStavke();
+        
+    }
+
+    public function izracunajIznosStavke()
+    {
+        return $this->proizvod->nabavna_cena * $this->kolicina;
+        // $proizvod = Proizvod::find($this->proizvod_id);
+        // $iznos = $proizvod->cena * $this->kolicina;
+
+        // return $iznos;
     }
 }
