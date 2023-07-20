@@ -17,35 +17,30 @@ class NarudzbenicaController extends Controller
     private $RSDobavljac;
     private $RSProizvodi;
     private $ukupno;
+    private $dbBroker;
+    private $n;
 
     public function __construct()
     {
         // Inicijalizacija svojstava
-        $this->brojNarudzbenice = $this->generisiSledeciBrojNarudzbenice();
+        // $this->brojNarudzbenice = $this->generisiSledeciBrojNarudzbenice();
         $this->listNacinOtpreme = $this->vratiSveNacinOtpreme();
         $this->RSDobavljaci = $this->vratiSveDobavljace();
         $this->RSDobavljac = null;
         $this->RSProizvodi = $this->vratiSveProizvode();
         $this->ukupno = 0.0;
 
+        // Instanciranje DBBroker-a u konstruktoru
+        $this->dbBroker = app(DBBroker::class);
+
+        $this->brojNarudzbenice = $this->vratiBrojNar();
+
     }
 
-    private function generisiSledeciBrojNarudzbenice()
-    {
-        // Pronalaženje poslednjeg broja narudžbenice iz baze
-        $poslednjiBrojNarudzbenice = Narudzbenica::max('broj_narudzbenice');
-
-        // Generisanje sledećeg broja narudžbenice
-        $sledeciBrojNarudzbenice = $poslednjiBrojNarudzbenice + 1;
-
-        return $sledeciBrojNarudzbenice;
-    }
+    
     private function vratiSveNacinOtpreme()
     { 
-        $nacinOtpreme = NacinOtpreme::all();
-        
-        // Vraćanje rezultata
-        return $nacinOtpreme;
+        return $this->dbBroker->vratiSveNacinOtpreme();
     }
 
     private function vratiSveDobavljace()
@@ -69,7 +64,7 @@ class NarudzbenicaController extends Controller
 
     public function vratiBrojNar()
     {
-        return $this->brojNarudzbenice;
+        return $this->dbBroker->vratiBrojNar();
     }
     // public function new()
     // {
@@ -89,8 +84,9 @@ class NarudzbenicaController extends Controller
 
     public function kreirajNarudzbenicu()
     {
-        $narudzbenica = new Narudzbenica(['brojNar' => $this->brojNarudzbenice]);
+        $narudzbenica = new Narudzbenica();
         $narudzbenica->save();
+        $this->n = $narudzbenica;
     }
 
     public function postaviNacinOtpreme(Request $request)
@@ -164,17 +160,20 @@ class NarudzbenicaController extends Controller
 
     public function pronadjiDobavljace(Request $request)
     {
-        $dobavljaci = Dobavljac::where('naziv_dobavljaca', 'LIKE', '%' . $request->naziv . '%')->get();
-        
+        // Pozivanje funkcije iz DBBroker klase
+        $dobavljaci = $this->dbBroker->pronadjiDobavljace($request->naziv);
+
+        // Postavljanje rezultata na svojstvo RSDobavljaci
         $this->RSDobavljaci = $dobavljaci;
+
         // Vraćanje rezultata
         return $dobavljaci;
     }
 
     public function izaberiDobavljaca($id)
     {
-        // Pronalaženje dobavljača na osnovu ID-ja
-        $dobavljac = Dobavljac::find($id);
+        // Pozivanje funkcije iz DBBroker klase
+        $dobavljac = $this->dbBroker->izaberiDobavljaca($id);
 
         // Postavljanje svojstva $RSDobavljac na izabranog dobavljača
         $this->RSDobavljac = $dobavljac;
@@ -201,7 +200,7 @@ class NarudzbenicaController extends Controller
 
     public function pronadjiProizvode(Request $request)
     {
-        $proizvodi = Proizvod::where('naziv_proizvoda', 'LIKE', '%' . $request->nazivProiz . '%')->get();
+        $proizvodi = $this->dbBroker->pronadjiProizvode($request->nazivProiz);
         
         $this->RSProizvodi = $proizvodi;
         // Vraćanje rezultata
@@ -227,9 +226,30 @@ class NarudzbenicaController extends Controller
     return response()->json(['message' => 'Stavka uspesno dodata.']);
     }
 
-    public function zapamtiNarudzbenicu(Request $request)
+    public function zapamtiUnos()
     {
-        // Implementacija za čuvanje/nos narudžbenice
+        // Pretpostavka: Postoji kontroler sa svojstvom $brojNarudzbenice koje sadrži ID narudžbenice
+        // $narudzbenica = Narudzbenica::findOrFail($this->brojNarudzbenice);
+
+        // Pokrećemo transakciju
+        $this->dbBroker->pokreniDBTransakciju();
+
+        if ($this->n) {
+            $ret = $this->dbBroker->zapamtiNarudzbenicu($narudzbenica);
+        } else {
+            return response()->json(['message' => 'Nije inicijalizovana narudzbenica.']);
+        }
+        // Čuvamo narudžbenicu i dobijamo rezultat
+        
+
+        // Proveravamo rezultat i potvrđujemo ili poništavamo transakciju
+        if ($ret === true) {
+            $this->dbBroker->potvrdiDBTransakciju();
+            return response()->json(['message' => 'Uspešno sačuvana narudžbenica.']);
+        } else {
+            $this->dbBroker->ponistiDBTransakciju();
+            return response()->json(['message' => 'Greška prilikom čuvanja narudžbenice.'], 500);
+        }
     }
 
 
@@ -293,7 +313,10 @@ class NarudzbenicaController extends Controller
 
     public function izaberiProizvod(Request $request)
     {
-        $proizvod = Proizvod::find($id);
+        $id = $request->sifraProizvoda; // da li je ovako??? name="sifraProizvoda" treba na frontu
+
+        // Pozivanje funkcije iz DBBroker klase
+        $proizvod = $this->dbBroker->izaberiProizvod($id);
 
 
         // Vraćanje izabranog dobavljača

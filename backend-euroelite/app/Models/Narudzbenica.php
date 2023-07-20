@@ -24,13 +24,7 @@ class Narudzbenica extends Model
         return $this->hasMany(StavkaNarudzbenice::class);
     }
 
-    public function __construct($brojNarudzbenice)
-    {
-        parent::__construct(); // Pozivamo konstruktor roditeljske klase
-
-        // Postavljamo vrednost svojstva $brojNarudzbenice na osnovu prosleđenog argumenta
-        $this->brojNarudzbenice = $brojNarudzbenice;
-    }
+    
 
     
 //metode
