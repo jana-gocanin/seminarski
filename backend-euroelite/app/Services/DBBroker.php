@@ -5,13 +5,14 @@ namespace App\Services;
 use App\Models\Narudzbenica;
 use App\Models\Dobavljac;
 use App\Models\Proizvod;
+use App\Models\NacinOtpreme;
 
 class DBBroker
 {
     public function vratiBrojNar()
     {
         // Pronalaženje poslednjeg broja narudžbenice iz baze
-        $poslednjiBrojNarudzbenice = Narudzbenica::max('broj_narudzbenice');
+        $poslednjiBrojNarudzbenice = Narudzbenica::max('id');
 
         // Generisanje sledećeg broja narudžbenice
         $sledeciBrojNarudzbenice = $poslednjiBrojNarudzbenice + 1;
@@ -89,7 +90,7 @@ class DBBroker
             foreach ($narudzbenica->stavke as $stavka) {
                 $stavka->save();
             }
-            
+
             // Ako je čuvanje uspešno, vraćamo true
             return true;
         } catch (\Exception $e) {

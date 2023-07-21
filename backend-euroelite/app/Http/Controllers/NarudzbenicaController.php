@@ -7,6 +7,7 @@ use App\Models\Narudzbenica;
 use App\Models\NacinOtpreme;
 use App\Models\Dobavljac;
 use App\Models\Proizvod;
+use App\Services\DBBroker;
 
 class NarudzbenicaController extends Controller
 {
@@ -24,26 +25,32 @@ class NarudzbenicaController extends Controller
     {
         // Inicijalizacija svojstava
         // $this->brojNarudzbenice = $this->generisiSledeciBrojNarudzbenice();
-        $this->listNacinOtpreme = $this->vratiSveNacinOtpreme();
+
+        
+        // Instanciranje DBBroker-a u konstruktoru
+        $this->dbBroker = app(DBBroker::class);
+
+        // $this->listNacinOtpreme = $this->vratiSveNacinOtpreme();
         $this->RSDobavljaci = $this->vratiSveDobavljace();
         $this->RSDobavljac = null;
         $this->RSProizvodi = $this->vratiSveProizvode();
         $this->ukupno = 0.0;
 
-        // Instanciranje DBBroker-a u konstruktoru
-        $this->dbBroker = app(DBBroker::class);
 
         $this->brojNarudzbenice = $this->vratiBrojNar();
 
     }
 
     
-    private function vratiSveNacinOtpreme()
+    public function vratiSveNacinOtpreme()
     { 
-        return $this->dbBroker->vratiSveNacinOtpreme();
+        $this->listNacinOtpreme = $this->dbBroker->vratiSveNacinOtpreme();
+        // return $this->dbBroker->vratiSveNacinOtpreme();
+
+        return $this->listNacinOtpreme;
     }
 
-    private function vratiSveDobavljace()
+    public function vratiSveDobavljace()
     {
         // Dobavljanje svih dobavljača iz baze podataka
         $dobavljaci = Dobavljac::all();
@@ -52,7 +59,7 @@ class NarudzbenicaController extends Controller
         return $dobavljaci;
     }
 
-    private function vratiSveProizvode()
+    public function vratiSveProizvode()
     {
         // Dobavljanje svih proizvoda iz baze podataka
         $proizvodi = Proizvod::all();
@@ -64,29 +71,17 @@ class NarudzbenicaController extends Controller
 
     public function vratiBrojNar()
     {
+        
         return $this->dbBroker->vratiBrojNar();
     }
-    // public function new()
-    // {
-    //     // Dobijanje vrednosti broja narudžbenice iz svojstva kontrolera
-    //     $brojNarudzbenice = $this->brojNarudzbenice;
-
-    //     // Kreiranje nove instance narudžbenice sa zadatim brojem narudžbenice
-    //     $narudzbenica = new Narudzbenica();
-    //     $narudzbenica->brojNar = $brojNarudzbenice;
-
-    //     // Ostale inicijalizacije
-    //     $narudzbenica->save();
-
-    //     // Vraćanje instance nove narudžbenice
-    //     //return $narudzbenica;
-    // }
 
     public function kreirajNarudzbenicu()
     {
         $narudzbenica = new Narudzbenica();
         // $narudzbenica->save();
         $this->n = $narudzbenica;
+
+        return response()->json(['message' => 'Uspesno kreirana narudzbenica.']);
     }
 
     public function postaviNacinOtpreme(Request $request)
@@ -98,30 +93,12 @@ class NarudzbenicaController extends Controller
 
         if ($narudzbenica) {
             $narudzbenica->postaviNacinOtpreme($nacinOtpremeId);
+            return response()->json(['message' => 'Uspesno postavljeno.']);
             // Ostale akcije i povratna vrednost
         } else {
-            // Prikazivanje greške ili odgovarajuća obrada
+            return response()->json(['message' => 'Nije uspesno.']);
         }
-        //$narudzbenica->nacinOtpreme()->associate($nacinOtpreme);
-        //$narudzbenica->save();
-        // $narudzbenica = Narudzbenica::findOrFail($request->narudzbenica_id);
-        // $nacinOtpreme = NacinOtpreme::findOrFail($request->nacin_otpreme_id);
         
-        // // Postavljanje nacina otpreme narudzbenice
-        // $narudzbenica->nacinOtpreme()->associate($nacinOtpreme);
-        // $narudzbenica->save();
-        
-        // // Uspesno zavrsena akcija
-        // return response()->json(['message' => 'Nacin otpreme uspesno postavljen.']);
-
-        
-    // $nacinOtpreme = $request->input('nacinOtpreme');
-    // $narudzbenica = Narudzbenica::find($this->brojNarudzbenice); // Promenite $this->brojNarudzbenice na odgovarajuće svojstvo koje sadrži broj narudžbenice
-    // $narudzbenica->nacin_otpreme_id = $nacinOtpreme;
-    // $narudzbenica->save();
-    
-    // Vraćanje potvrde ili nekog rezultata po potrebi
-
 
     }
 
@@ -131,8 +108,9 @@ class NarudzbenicaController extends Controller
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
         if ($narudzbenica) {
             $narudzbenica->postaviDatumNar($datumNarudzbenice);
+            return response()->json(['message' => 'Uspesno postavljeno.']);
         } else {
-            // Prikazivanje greške ili odgovarajuća obrada
+            return response()->json(['message' => 'Nije uspesno.']);
         }
     }
 
@@ -142,8 +120,9 @@ class NarudzbenicaController extends Controller
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
         if ($narudzbenica) {
             $narudzbenica->postaviRokIsporuke($rokIsporuke);
+            return response()->json(['message' => 'Uspesno postavljeno.']);
         } else {
-            // Prikazivanje greške ili odgovarajuća obrada
+            return response()->json(['message' => 'Nije uspesno.']);
         }
     }
 
@@ -153,8 +132,9 @@ class NarudzbenicaController extends Controller
         $narudzbenica = Narudzbenica::where('id', $this->brojNarudzbenice)->first();
         if ($narudzbenica) {
             $narudzbenica->postaviZiroRacun($ziroRacun);
+            return response()->json(['message' => 'Uspesno postavljeno.']);
         } else {
-            // Prikazivanje greške ili odgovarajuća obrada
+            return response()->json(['message' => 'Nije uspesno.']);
         }
     }
 
