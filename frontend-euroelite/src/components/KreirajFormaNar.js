@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+
+import { BASE_URL } from "../config/apiConfig";
 import DodajStavkuForma from "./DodajStavkuForma";
 import {
   setBrojNarudzbenice,
   setDatumNarudzbenice,
   setZiroRacun,
-  setNacinOtpreme,
+  // setNacinOtpreme,
   setRokIsporuke,
   setUnosDobavljaca,
   setDobavljac,
@@ -16,6 +17,10 @@ import {
   updateStavka,
 } from "../store/reducers/narudzbenicaSlice";
 import "./KreirajFormaNar.css";
+import {
+  setNacinOtpreme,
+  fetchNaciniOtpreme,
+} from "../store/reducers/nacinOtpremeSlice";
 
 const KreirajFormaNar = () => {
   const dispatch = useDispatch();
@@ -23,7 +28,7 @@ const KreirajFormaNar = () => {
     brojNarudzbenice,
     datumNarudzbenice,
     ziroRacun,
-    nacinOtpreme,
+    // nacinOtpreme,
     rokIsporuke,
     unosDobavljaca,
     dobavljac,
@@ -31,55 +36,224 @@ const KreirajFormaNar = () => {
     stavke,
   } = useSelector((state) => state.narudzbenica);
 
+  const { naciniOtpreme, nacinOtpreme } = useSelector(
+    (state) => state.nacinOtpreme
+  );
+  const [searchResult, setSearchResult] = useState([]);
+  const [selectedDobavljac, setSelectedDobavljac] = useState(null);
+
+  useEffect(() => {
+    // Dohvati sve načine otpreme kada se komponenta montira
+    dispatch(fetchNaciniOtpreme());
+  }, [dispatch]);
+
   const handleBrojNarudzbeniceChange = (e) => {
     dispatch(setBrojNarudzbenice(e.target.value));
   };
 
-  const handleDatumNarudzbeniceChange = (e) => {
-    dispatch(setDatumNarudzbenice(e.target.value));
+  const handleDatumNarudzbeniceChange = async (e) => {
+    const newDatumNarudzbenice = e.target.value;
+    dispatch(setRokIsporuke(newDatumNarudzbenice));
+
+    // Make the API call to postaviDatumNar
+    try {
+      const response = await fetch(`${BASE_URL}/postaviDatumNar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          datumNarudzbenice: newDatumNarudzbenice,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        // Handle the error if needed
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      // Handle any network or fetch errors
+      console.error("Error:", error);
+    }
   };
 
   const handleZiroRacunChange = (e) => {
     dispatch(setZiroRacun(e.target.value));
   };
 
-  const handleNacinOtpremeChange = (e) => {
-    dispatch(setNacinOtpreme(e.target.value));
+  const handleZiroRacunChangeBlur = async (e) => {
+    const racun = e.target.value;
+    dispatch(setZiroRacun(racun));
+
+    // Make the API call to postaviDatumNar
+    try {
+      const response = await fetch(`${BASE_URL}/postaviZiroRacun`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ziroRacun: racun,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        // Handle the error if needed
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      // Handle any network or fetch errors
+      console.error("Error:", error);
+    }
   };
 
-  const handleRokIsporukeChange = (e) => {
-    dispatch(setRokIsporuke(e.target.value));
+  const handleNacinOtpremeChange = async (e) => {
+    const nacin = e.target.value;
+    dispatch(setNacinOtpreme(nacin));
+
+    try {
+      const response = await fetch(`${BASE_URL}/postaviNacinOtpreme`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nacinOtpreme: nacin,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleRokIsporukeChange = async (e) => {
+    const newRok = e.target.value;
+    dispatch(setDatumNarudzbenice(newRok));
+
+    try {
+      const response = await fetch(`${BASE_URL}/postaviRokIsporuke`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rokIsporuke: newRok,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleUnosDobavljacaChange = (e) => {
     dispatch(setUnosDobavljaca(e.target.value));
   };
 
-  const handleIzaberiDobavljacaClick = () => {
-    // Logika za pronalaženje i postavljanje dobavljača
-    const selectedDobavljac = {}; // Dobavljač koji je odabran
-    dispatch(setDobavljac(selectedDobavljac));
+  const handleIzaberiDobavljacaTableClick = async (dobavljac) => {
+    setSelectedDobavljac(dobavljac);
+
+    // try {
+    //   const response = await fetch(
+    //     `${BASE_URL}/dobavljaci/izaberi/${dobavljac.id}`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+
+    //   if (!response.ok) {
+    //     console.error("Error:", response.statusText);
+    //     return;
+    //   }
+    //   const data = await response.json();
+    //   return data;
+
+    //   // Ažurirajemo stanje Reduxa sa izabranim dobavljačem
+    //   // dispatch(setDobavljac(dobavljac));
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
+    dispatch(setDobavljac(dobavljac));
   };
 
-  const handleIzaberiDobavljacaTableClick = (dobavljac) => {
-    dispatch(setDobavljac(dobavljac));
+  const handleIzaberiDobavljaca = async (dobavljac) => {
+    try {
+      const response = await fetch(`${BASE_URL}/dobavljaci/postavi`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dobavljacId: dobavljac.id,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        return;
+      }
+
+      // Ažurirajemo stanje Reduxa sa izabranim dobavljačem
+      dispatch(setDobavljac(dobavljac));
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleObrisiStavku = (index) => {
     dispatch(removeStavka(index));
   };
 
+  const handlePronadjiDobavljace = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/dobavljaci/pronadji/${unosDobavljaca}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+      setSearchResult(data); // Postavi rezultat pretrage u stanje
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Logika za slanje podataka na server
     // Resetovanje polja forme
-    dispatch(setBrojNarudzbenice(""));
-    dispatch(setDatumNarudzbenice(""));
-    dispatch(setZiroRacun(""));
-    dispatch(setNacinOtpreme(""));
-    dispatch(setRokIsporuke(""));
-    dispatch(setUnosDobavljaca(""));
-    dispatch(setDobavljac(null));
+    // dispatch(setBrojNarudzbenice(""));
+    // dispatch(setDatumNarudzbenice(""));
+    // dispatch(setZiroRacun(""));
+    // dispatch(setNacinOtpreme(""));
+    // dispatch(setRokIsporuke(""));
+    // dispatch(setUnosDobavljaca(""));
+    // dispatch(setDobavljac(null));
   };
 
   return (
@@ -109,6 +283,7 @@ const KreirajFormaNar = () => {
           <input
             type="text"
             value={ziroRacun}
+            onBlur={handleZiroRacunChangeBlur}
             onChange={handleZiroRacunChange}
           />
         </div>
@@ -116,9 +291,11 @@ const KreirajFormaNar = () => {
           <label>Nacin otpreme:</label>
           <select value={nacinOtpreme} onChange={handleNacinOtpremeChange}>
             <option value="">Odaberite nacin otpreme</option>
-            <option value="opcija1">Opcija 1</option>
-            <option value="opcija2">Opcija 2</option>
-            <option value="opcija3">Opcija 3</option>
+            {naciniOtpreme.map((nacin) => (
+              <option key={nacin.id} value={nacin.id}>
+                {nacin.naziv_nacina}
+              </option>
+            ))}
           </select>
         </div>
         <div className="form-group">
@@ -140,7 +317,7 @@ const KreirajFormaNar = () => {
         />
         <button
           type="button"
-          onClick={handleIzaberiDobavljacaClick}
+          onClick={handlePronadjiDobavljace}
           //   className="pronadji-dobavljaca-button"
         >
           Pronadji dobavljaca
@@ -148,11 +325,14 @@ const KreirajFormaNar = () => {
       </div>
       {dobavljac && (
         <div>
-          <p>Izabrani dobavljac: {dobavljac.naziv}</p>
+          <p>
+            Izabrani dobavljac: {dobavljac.naziv_dobavljaca}{" "}
+            {dobavljac.email_dobavljaca}
+          </p>
           {/* Ovdje možete prikazati dodatne informacije o dobavljacu */}
         </div>
       )}
-      {dobavljaci.length > 0 && (
+      {searchResult.length > 0 && (
         <div className="dobavljac-table-container">
           <table className="dobavljac-table">
             <thead>
@@ -162,21 +342,21 @@ const KreirajFormaNar = () => {
               </tr>
             </thead>
             <tbody>
-              {dobavljaci.map((dobavljac) => (
+              {searchResult.map((dobavljac) => (
                 <tr
                   key={dobavljac.id}
                   onClick={() => handleIzaberiDobavljacaTableClick(dobavljac)}
-                  className={dobavljac === dobavljac ? "selected" : ""}
+                  className={selectedDobavljac === dobavljac ? "selected" : ""}
                 >
-                  <td>{dobavljac.naziv}</td>
-                  <td>{dobavljac.oib}</td>
+                  <td>{dobavljac.naziv_dobavljaca}</td>
+                  <td>{dobavljac.id}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <button
             type="button"
-            onClick={() => handleIzaberiDobavljacaTableClick(dobavljac)}
+            onClick={() => handleIzaberiDobavljaca(dobavljac)}
             className="izaberi-dobavljaca-button"
           >
             Izaberi dobavljaca

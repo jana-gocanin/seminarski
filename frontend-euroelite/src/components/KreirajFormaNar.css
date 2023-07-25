@@ -119,3 +119,7 @@
 .form-buttons button {
   margin: 0 10px; /* Dodajte margine između dugmadi */
 }
+
+select {
+  color: black; /* Promeni boju teksta na crnu */
+}

@@ -8,6 +8,8 @@ import "./MenuForm.css";
 import KreirajNacinOtpreme from "./KreirajNacinOtpreme";
 import IzmeniNacinOtpreme from "./IzmeniNacinOtpreme";
 
+import { BASE_URL } from "../config/apiConfig";
+
 const MenuForm = () => {
   const dispatch = useDispatch();
   const selectedOption = useSelector((state) => state.menu.selectedOption);
@@ -16,9 +18,8 @@ const MenuForm = () => {
     if (option === "kreiraj") {
       try {
         // Pozivamo API za kreiranje narudžbenice
-        const response = await fetch("PUTANJA_DO_APIJA", {
-          method: "POST",
-          // Dodajte ostale potrebne opcije za zahtev (npr. telo zahteva)
+        const response = await fetch(`${BASE_URL}/kreirajNarudzbenicu`, {
+          method: "GET",
         });
         const data = await response.json();
 
@@ -29,7 +30,7 @@ const MenuForm = () => {
             JSON.stringify(data.brojNarudzbenice)
           );
         } else {
-          // Ako je odgovor sa greškom, možete obraditi grešku ili prikazati neku poruku korisniku
+          console.error("Request was not successful. Status:", response.status);
         }
       } catch (error) {
         // Obrada grešaka prilikom komunikacije sa serverom

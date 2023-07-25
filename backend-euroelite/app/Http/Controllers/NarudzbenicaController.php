@@ -80,7 +80,7 @@ class NarudzbenicaController extends Controller
         $narudzbenica = new Narudzbenica();
           $narudzbenica->save();
         //   $this->brojNarudzbenice = $this->vratiBrojNar();
-        $this->$brojNarudzbenice = $this->vratiBrojNar();
+        $this->brojNarudzbenice = $this->vratiBrojNar();
         $this->n = $narudzbenica;
 
         return response()->json(['message' => 'Uspesno kreirana narudzbenica.', 'brojNarudzbenice' => $this->brojNarudzbenice]);

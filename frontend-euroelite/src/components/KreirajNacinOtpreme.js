@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { sacuvajNacinOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import { fetchNaciniOtpreme } from "../store/reducers/nacinOtpremeSlice";
 import "./KreirajNacinOtpreme.css";
 
 const KreirajNacinOtpreme = () => {
@@ -9,12 +9,12 @@ const KreirajNacinOtpreme = () => {
   const [nazivNacinaOtpreme, setNazivNacinaOtpreme] = useState("");
 
   const handleSacuvajNacinOtpreme = () => {
-    const nacinOtpreme = {
-      broj: brojNacinaOtpreme,
-      naziv: nazivNacinaOtpreme,
-    };
-    dispatch(sacuvajNacinOtpreme(nacinOtpreme));
-    setNazivNacinaOtpreme("");
+    // const nacinOtpreme = {
+    //   broj: brojNacinaOtpreme,
+    //   naziv: nazivNacinaOtpreme,
+    // };
+    // dispatch(sacuvajNacinOtpreme(nacinOtpreme));
+    // setNazivNacinaOtpreme("");
   };
 
   return (

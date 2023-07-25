@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { sacuvajNacinOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import { fetchNaciniOtpreme } from "../store/reducers/nacinOtpremeSlice";
 import "./IzmeniNacinOtpreme.css";
 
 const IzmeniNacinOtpreme = () => {
@@ -17,16 +17,16 @@ const IzmeniNacinOtpreme = () => {
   };
 
   const handleSacuvajIzmenu = () => {
-    if (izmenaNacinaOtpreme.trim() === "") {
-      return;
-    }
-    const izmenjenNacinOtpreme = {
-      ...izabraniNacinOtpreme,
-      naziv: izmenaNacinaOtpreme,
-    };
-    dispatch(sacuvajNacinOtpreme(izmenjenNacinOtpreme));
-    setIzmenaNacinaOtpreme("");
-    setIzabraniNacinOtpreme(null);
+    // if (izmenaNacinaOtpreme.trim() === "") {
+    //   return;
+    // }
+    // const izmenjenNacinOtpreme = {
+    //   ...izabraniNacinOtpreme,
+    //   naziv: izmenaNacinaOtpreme,
+    // };
+    // dispatch(sacuvajNacinOtpreme(izmenjenNacinOtpreme));
+    // setIzmenaNacinaOtpreme("");
+    // setIzabraniNacinOtpreme(null);
   };
 
   const handleObrisiNacinOtpreme = (nacinOtpreme) => {
