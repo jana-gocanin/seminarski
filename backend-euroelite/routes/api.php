@@ -31,3 +31,27 @@ Route::post('/postaviNacinOtpreme', [NarudzbenicaController::class, 'postaviNaci
 Route::post('/postaviDatumNar', [NarudzbenicaController::class, 'postaviDatumNar']);
 Route::post('/postaviRokIsporuke', [NarudzbenicaController::class, 'postaviRokIsporuke']);
 Route::post('/postaviZiroRacun', [NarudzbenicaController::class, 'postaviZiroRacun']);
+
+Route::group(['prefix' => 'dobavljaci'], function () {
+    // Pretraga dobavljača po nazivu
+    Route::get('/pronadji/{naziv}', [NarudzbenicaController::class, 'pronadjiDobavljace']);
+
+    // Prikaz odabranog dobavljača po ID-u
+    Route::get('/izaberi/{id}', [NarudzbenicaController::class, 'izaberiDobavljaca']);
+
+    // Postavljanje dobavljača na narudžbenicu
+    Route::post('/postavi', [NarudzbenicaController::class, 'postaviDobavljaca']);
+});
+
+Route::group(['prefix' => 'proizvodi'], function () {
+    Route::get('pronadji/{nazivProiz}',  [NarudzbenicaController::class, 'pronadjiProizvode']);
+    Route::get('izaberi/{sifraProizvoda}',  [NarudzbenicaController::class, 'izaberiProizvod']);
+    Route::post('dodaj-stavku',  [NarudzbenicaController::class, 'dodajStavku']);
+});
+
+Route::get('/narudzbenice/pronadji', [NarudzbenicaController::class, 'pronadjiNarudzbenicu']);
+Route::post('/stavka/obrisi', [NarudzbenicaController::class, 'obrisi']);
+Route::post('/stavka/izmeni', [NarudzbenicaController::class, 'izmeni']);
+Route::post('/narudzbenice/obrisi-narudzbenicu', [NarudzbenicaController::class, 'obrisiNarudzbenicu']);
+
+Route::post('/narudzbenice/zapamtiUnos', [NarudzbenicaController::class, 'zapamtiUnos']);

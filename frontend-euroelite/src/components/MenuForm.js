@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectOption } from "../store/reducers/menuSlice";
 import KreirajNarudzbenicuForm from "./KreirajFormaNar";
@@ -12,7 +12,31 @@ const MenuForm = () => {
   const dispatch = useDispatch();
   const selectedOption = useSelector((state) => state.menu.selectedOption);
 
-  const handleOptionChange = (option) => {
+  const handleOptionChange = async (option) => {
+    if (option === "kreiraj") {
+      try {
+        // Pozivamo API za kreiranje narudžbenice
+        const response = await fetch("PUTANJA_DO_APIJA", {
+          method: "POST",
+          // Dodajte ostale potrebne opcije za zahtev (npr. telo zahteva)
+        });
+        const data = await response.json();
+
+        // Ako je odgovor uspešan, keširamo brojNarudzbenice
+        if (response.ok) {
+          localStorage.setItem(
+            "brojNarudzbenice",
+            JSON.stringify(data.brojNarudzbenice)
+          );
+        } else {
+          // Ako je odgovor sa greškom, možete obraditi grešku ili prikazati neku poruku korisniku
+        }
+      } catch (error) {
+        // Obrada grešaka prilikom komunikacije sa serverom
+        console.error("Greška prilikom komunikacije sa serverom:", error);
+      }
+    }
+
     dispatch(selectOption(option));
     console.log(option);
   };

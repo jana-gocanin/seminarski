@@ -36,6 +36,8 @@ class Narudzbenica extends Model
             $stavka->kolicina = $novaKolicina;
 
             $stavka->iznos = $stavka->izracunajIznosStavke();
+
+            $stavka->save();
         }
     }
 
@@ -131,17 +133,18 @@ class Narudzbenica extends Model
         return $noviRedniBroj;
     }
 
-    public function kreirajStavku(Proizvod $proizvod, $kolicina)
+    public function kreirajStavku(Proizvod $proizvod, $kolicina, $brojNarudzbenice)
     {
         $rb = $this->dajNoviRedniBr();
         // Kreiranje nove stavke narudžbenice
         $novaStavka = new StavkaNarudzbenice([
             'proizvod_id' => $proizvod->id,
             'kolicina' => $kolicina,
-            'narudzbenica_id' => $this->id,
-            'id'=>$this->redniBroj
+            'narudzbenica_id' => $brojNarudzbenice,
+            'id'=>$rb
         ]);
 
+        $novaStavka->save();
         $this->dodajUKolekciju($novaStavka);
         // Vraćanje nove stavke
         return $novaStavka;
@@ -152,5 +155,18 @@ class Narudzbenica extends Model
         $this->stavke->push($stavka);
     }
 
+    public function azurirajRedneBrojeve()
+    {
+        // Uzimamo sve stavke narudžbenice sortirane po rednom broju
+        $stavke = $this->stavke->sortBy('id');
+
+        // Postavljamo redne brojeve stavki po redu
+        $redniBroj = 1;
+        foreach ($stavke as $stavka) {
+            $stavka->id = $redniBroj;
+            $stavka->save();
+            $redniBroj++;
+        }
+    }
 }
 

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Narudzbenica;
 use App\Models\Dobavljac;
 use App\Models\Proizvod;
@@ -15,9 +17,9 @@ class DBBroker
         $poslednjiBrojNarudzbenice = Narudzbenica::max('id');
 
         // Generisanje sledećeg broja narudžbenice
-        $sledeciBrojNarudzbenice = $poslednjiBrojNarudzbenice + 1;
+        // $sledeciBrojNarudzbenice = $poslednjiBrojNarudzbenice + 1;
 
-        return $sledeciBrojNarudzbenice;
+        return $poslednjiBrojNarudzbenice;
     }
 
     public function vratiSveNacinOtpreme()

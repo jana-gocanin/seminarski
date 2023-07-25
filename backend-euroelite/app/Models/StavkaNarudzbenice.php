@@ -38,10 +38,15 @@ class StavkaNarudzbenice extends Model
 
     public function izracunajIznosStavke()
     {
-        return $this->proizvod->nabavna_cena * $this->kolicina;
-        // $proizvod = Proizvod::find($this->proizvod_id);
-        // $iznos = $proizvod->cena * $this->kolicina;
+        // return $this->proizvod->nabavna_cena * $this->kolicina; if ($this->proizvod_id) {
+        $proizvod = Proizvod::find($this->proizvod_id);
 
-        // return $iznos;
+        // Provera da li je proizvod pronađen pre nego što izračunamo iznos
+            if ($proizvod) {
+                return $proizvod->nabavna_cena * $this->kolicina;
+            }
+
+            return 0;
+        }
+
     }
-}
