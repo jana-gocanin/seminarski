@@ -15,6 +15,8 @@ import {
   addStavka,
   removeStavka,
   updateStavka,
+  setEditedStavka,
+  updateStavkaKolicina,
 } from "../store/reducers/narudzbenicaSlice";
 import "./KreirajFormaNar.css";
 import {
@@ -41,6 +43,9 @@ const KreirajFormaNar = () => {
   );
   const [searchResult, setSearchResult] = useState([]);
   const [selectedDobavljac, setSelectedDobavljac] = useState(null);
+  const [editedQuantity, setEditedQuantity] = useState("");
+  const [editedStavkaIndex, setEditedStavkaIndex] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     // Dohvati sve načine otpreme kada se komponenta montira
@@ -260,6 +265,67 @@ const KreirajFormaNar = () => {
     }
   };
 
+  const handleIzmeniStavku = (stavka, index) => {
+    setEditedQuantity(stavka.kolicina);
+    setEditedStavkaIndex(index);
+
+    // Dispatch Redux action to set the editing state
+    dispatch(setEditedStavka({ index, isEditing: true }));
+  };
+
+  const handleOtkaziIzmenu = () => {
+    setEditedStavkaIndex(null);
+    setEditedQuantity("");
+  };
+
+  const handlePotvrdiIzmenu = async () => {
+    if (editedStavkaIndex === null) return;
+
+    try {
+      const stavka = stavke[editedStavkaIndex];
+      const response = await fetch(`${BASE_URL}/stavka/izmeni`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: stavka.id,
+          brojNarudzbenice: brojNarudzbenice,
+          novaKolicina: editedQuantity,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data.message); // Poruka sa servera, možete je koristiti ako je potrebno
+
+      // Ažurirajte stavku sa novom količinom
+      const updatedStavke = [...stavke];
+      updatedStavke[editedStavkaIndex] = {
+        ...stavka,
+        kolicina: editedQuantity,
+        iznos: data.iznos.original.ukupan_iznos, // Novi iznos koji ste dobili sa servera
+      };
+      dispatch(
+        updateStavka({
+          index: editedStavkaIndex,
+          stavka: updatedStavke[editedStavkaIndex],
+        })
+      );
+
+      // Resetujte stanje uređivanja
+      setEditedStavkaIndex(null);
+      setEditedQuantity("");
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Logika za slanje podataka na server
@@ -396,10 +462,40 @@ const KreirajFormaNar = () => {
               {stavke.map((stavka, index) => (
                 <tr key={index}>
                   <td>{stavka.proizvod.naziv_proizvoda}</td>
-                  <td>{stavka.kolicina}</td>
+                  {editedStavkaIndex === index ? (
+                    // Polje za unos izmenjene količine
+                    <td>
+                      <input
+                        type="number"
+                        value={editedQuantity}
+                        onChange={(e) => setEditedQuantity(e.target.value)}
+                      />
+                    </td>
+                  ) : (
+                    // Prikaz postojeće količine ako nije u toku izmena
+                    <td>{stavka.kolicina}</td>
+                  )}
                   <td>{stavka.iznos}</td>
                   <td>
-                    <button type="button">Izmeni</button>
+                    {editedStavkaIndex === index ? (
+                      // Dugmad za potvrdu i otkazivanje izmene
+                      <>
+                        <button type="button" onClick={handlePotvrdiIzmenu}>
+                          Potvrdi
+                        </button>
+                        <button type="button" onClick={handleOtkaziIzmenu}>
+                          Otkazi
+                        </button>
+                      </>
+                    ) : (
+                      // Dugme za početak izmene
+                      <button
+                        type="button"
+                        onClick={() => handleIzmeniStavku(stavka, index)}
+                      >
+                        Izmeni
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleObrisiStavku(stavka.id)}
@@ -419,5 +515,4 @@ const KreirajFormaNar = () => {
     </form>
   );
 };
-
 export default KreirajFormaNar;

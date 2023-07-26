@@ -59,6 +59,14 @@ const narudzbenicaSlice = createSlice({
       const { index, stavka } = action.payload;
       state.stavke[index] = stavka;
     },
+    setEditedStavka: (state, action) => {
+      const { index, isEditing } = action.payload;
+      state.stavke[index].isEditing = isEditing;
+    },
+    updateStavkaKolicina: (state, action) => {
+      const { index, kolicina } = action.payload;
+      state.stavke[index].kolicina = kolicina;
+    },
     deleteNarudzbenica: (state) => {
       // Reset the state to initial values or clear the narudzbenica data
       state.brojNarudzbenice = "";
@@ -86,6 +94,8 @@ export const {
   addStavka,
   removeStavka,
   updateStavka,
+  setEditedStavka,
+  updateStavkaKolicina,
   deleteNarudzbenica,
 } = narudzbenicaSlice.actions;
 

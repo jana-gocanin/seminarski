@@ -309,9 +309,9 @@ class NarudzbenicaController extends Controller
 
         if ($narudzbenica) {
             $narudzbenica->izmeni($redniBroj, $novaKolicina);
-            $this->dajUkupanIznos($brojNarudzbenice);
+            $noviIznos = $this->dajUkupanIznos($brojNarudzbenice);
 
-            return response()->json(['message' => 'Uspešno izmenjena stavka.']);
+            return response()->json(['message' => 'Uspešno izmenjena stavka.', 'iznos'=>$noviIznos]);
         }else{
             return response()->json(['message' => 'greska']);
         }
