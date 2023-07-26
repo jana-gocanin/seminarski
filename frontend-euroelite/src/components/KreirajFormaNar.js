@@ -211,10 +211,6 @@ const KreirajFormaNar = () => {
     }
   };
 
-  const handleObrisiStavku = (index) => {
-    dispatch(removeStavka(index));
-  };
-
   const handlePronadjiDobavljace = async () => {
     try {
       const response = await fetch(
@@ -234,6 +230,31 @@ const KreirajFormaNar = () => {
 
       const data = await response.json();
       setSearchResult(data); // Postavi rezultat pretrage u stanje
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleObrisiStavku = async (stavkaId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/stavka/obrisi`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: stavkaId,
+          brojNarudzbenice: brojNarudzbenice,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        return;
+      }
+
+      // If the stavka is successfully deleted, update the state in Redux
+      dispatch(removeStavka(stavkaId));
     } catch (error) {
       console.error("Error:", error);
     }
@@ -381,7 +402,7 @@ const KreirajFormaNar = () => {
                     <button type="button">Izmeni</button>
                     <button
                       type="button"
-                      onClick={() => handleObrisiStavku(index)}
+                      onClick={() => handleObrisiStavku(stavka.id)}
                     >
                       Obriši
                     </button>

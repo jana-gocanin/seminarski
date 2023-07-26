@@ -48,7 +48,12 @@ const narudzbenicaSlice = createSlice({
       state.stavke.push(action.payload);
     },
     removeStavka: (state, action) => {
-      state.stavke.splice(action.payload, 1);
+      const stavkaId = action.payload;
+      const index = state.stavke.findIndex((stavka) => stavka.id === stavkaId);
+
+      if (index !== -1) {
+        state.stavke.splice(index, 1);
+      }
     },
     updateStavka: (state, action) => {
       const { index, stavka } = action.payload;
