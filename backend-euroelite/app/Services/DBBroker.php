@@ -65,14 +65,15 @@ class DBBroker
 
         // Ako je proizvod pronađen, vraćamo novu instancu proizvoda
         if ($proizvod) {
-            return new Proizvod([
-                'id' => $proizvod->id,
-                'naziv_proizvoda' => $proizvod->naziv_proizvoda,
-                'nabavna_cena' => $proizvod->nabavna_cena,
-                'opis' => $proizvod->opis,
-                // Dodajte ovde ostale atribute proizvoda ako je potrebno
-            ]);
-        }
+            // return new Proizvod([
+            //     'id' => $proizvod->id,
+            //     'naziv_proizvoda' => $proizvod->naziv_proizvoda,
+            //     'nabavna_cena' => $proizvod->nabavna_cena,
+            //     'opis' => $proizvod->opis,
+            //     // Dodajte ovde ostale atribute proizvoda ako je potrebno
+            // ]);5           
+            return $proizvod;
+        } 
 
         // Ako proizvod nije pronađen, vraćamo null
         return null;

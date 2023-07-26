@@ -226,7 +226,7 @@ class NarudzbenicaController extends Controller
         $this->dajUkupanIznos($brojNarudzbenice);
 
         // Uspesno zavrsena akcija
-        return response()->json(['message' => 'Stavka uspesno dodata.']);
+        return response()->json(['message' => 'Stavka uspesno dodata.', 'stavka'=> $stavka, 'proizvod'=>$stavka->proizvod]);
     } else {
         // Ako proizvod nije pronađen, vratite grešku
         return response()->json(['message' => 'Proizvod nije pronađen.'], 404);

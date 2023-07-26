@@ -19,3 +19,8 @@
   backdrop-filter: blur(10px);
   box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
 }
+
+.selected {
+  background-color: #099142;
+  color: #fff;
+}

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('narudzbenicas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('nacin_otpreme_id')->constrained('nacin_otpremes');
-            $table->date('datum');
-            $table->date('rok');
-            $table->string('ziro_racun');
-            $table->decimal('ukupno', 8, 2);
-            $table->foreignId('dobavljac_id')->constrained('dobavljacs');
+            $table->foreignId('nacin_otpreme_id')->constrained('nacin_otpremes')->default(1);
+            $table->date('datum')->nullable();
+            $table->date('rok')->nullable();
+            $table->string('ziro_racun')->nullable();
+            $table->decimal('ukupno', 8, 2)->nullable();
+            $table->foreignId('dobavljac_id')->constrained('dobavljacs')->default(1);
             $table->timestamps();
         });
     }

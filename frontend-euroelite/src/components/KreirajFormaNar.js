@@ -47,10 +47,6 @@ const KreirajFormaNar = () => {
     dispatch(fetchNaciniOtpreme());
   }, [dispatch]);
 
-  const handleBrojNarudzbeniceChange = (e) => {
-    dispatch(setBrojNarudzbenice(e.target.value));
-  };
-
   const handleDatumNarudzbeniceChange = async (e) => {
     const newDatumNarudzbenice = e.target.value;
     dispatch(setRokIsporuke(newDatumNarudzbenice));
@@ -265,7 +261,6 @@ const KreirajFormaNar = () => {
           <input
             type="text"
             value={brojNarudzbenice}
-            onChange={handleBrojNarudzbeniceChange}
             readOnly
             className="readonly-input"
           />
@@ -372,14 +367,16 @@ const KreirajFormaNar = () => {
               <tr>
                 <th>Proizvod</th>
                 <th>Količina</th>
+                <th>Iznos</th>
                 <th>Akcije</th>
               </tr>
             </thead>
             <tbody>
               {stavke.map((stavka, index) => (
                 <tr key={index}>
-                  <td>{stavka.proizvod}</td>
+                  <td>{stavka.proizvod.naziv_proizvoda}</td>
                   <td>{stavka.kolicina}</td>
+                  <td>{stavka.iznos}</td>
                   <td>
                     <button type="button">Izmeni</button>
                     <button

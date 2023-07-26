@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  proizvod: "", // Dodali smo proizvod i kolicinu u stanje
+  kolicina: "",
+  izabraniProizvod: null, // Dodali smo izabraniProizvod u stanje
   stavke: [
     {
       id: 0,
       kolicina: 0,
       iznos: 0,
-      proizvod_id: 0,
+      proizvod: "",
       narudzbenica_id: 0,
     },
   ],
@@ -16,6 +19,15 @@ const stavkaNarudzbeniceSlice = createSlice({
   name: "stavkaNarudzbenice",
   initialState,
   reducers: {
+    setProizvod: (state, action) => {
+      state.proizvod = action.payload;
+    },
+    setKolicina: (state, action) => {
+      state.kolicina = action.payload;
+      },
+      setIzabraniProizvod: (state, action) => {
+        state.izabraniProizvod = action.payload;
+      },
     // addStavka: (state, action) => {
     //   state.stavke.push(action.payload);
     // },
@@ -35,5 +47,5 @@ const stavkaNarudzbeniceSlice = createSlice({
   },
 });
 
-export const {} = stavkaNarudzbeniceSlice.actions;
+export const { setProizvod, setKolicina, setIzabraniProizvod } = stavkaNarudzbeniceSlice.actions;
 export default stavkaNarudzbeniceSlice.reducer;

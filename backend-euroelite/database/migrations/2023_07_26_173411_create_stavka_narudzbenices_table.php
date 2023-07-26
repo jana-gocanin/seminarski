@@ -18,6 +18,9 @@ return new class extends Migration
             $table->foreignId('proizvod_id')->constrained('proizvods');
             $table->foreignId('narudzbenica_id')->constrained('narudzbenicas');
             $table->timestamps();
+
+            // Dodajemo primarni ključ koji se sastoji od 'id' i 'narudzbenica_id'
+            $table->primary(['id', 'narudzbenica_id']);
         });
     }
 
