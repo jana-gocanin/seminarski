@@ -7,6 +7,7 @@ import ObrisiNarudzbenicuForm from "./ObrisiFormaNar";
 import "./MenuForm.css";
 import KreirajNacinOtpreme from "./KreirajNacinOtpreme";
 import IzmeniNacinOtpreme from "./IzmeniNacinOtpreme";
+import { setBrojNarudzbenice } from "../store/reducers/narudzbenicaSlice";
 
 import { BASE_URL } from "../config/apiConfig";
 
@@ -25,10 +26,18 @@ const MenuForm = () => {
 
         // Ako je odgovor uspešan, keširamo brojNarudzbenice
         if (response.ok) {
+          // localStorage.setItem(
+          //   "brojNarudzbenice",
+          //   JSON.stringify(data.brojNarudzbenice)
+          // );
+          const brojNarudzbenice = data.brojNarudzbenice;
           localStorage.setItem(
             "brojNarudzbenice",
-            JSON.stringify(data.brojNarudzbenice)
+            JSON.stringify(brojNarudzbenice)
           );
+
+          // Dispatch the action to update the Redux state with the new brojNarudzbenice
+          dispatch(setBrojNarudzbenice(brojNarudzbenice));
         } else {
           console.error("Request was not successful. Status:", response.status);
         }

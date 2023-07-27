@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const brojNarudzbeniceFromStorage = JSON.parse(
-  localStorage.getItem("brojNarudzbenice")
-);
-
 const initialState = {
-  brojNarudzbenice: brojNarudzbeniceFromStorage || "",
+  brojNarudzbenice: "",
   datumNarudzbenice: "",
   ziroRacun: "",
   nacinOtpreme: "",
