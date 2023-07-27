@@ -81,7 +81,7 @@ const KreirajFormaNar = () => {
       const response = await fetch(
         `${BASE_URL}/narudzbenice/obrisi-narudzbenicu`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
