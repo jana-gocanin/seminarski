@@ -12,6 +12,7 @@ const initialState = {
   rokIsporuke: "",
   unosDobavljaca: "",
   dobavljac: null,
+  ukupanIznos: 0,
   dobavljaci: [],
   stavke: [],
 };
@@ -46,19 +47,26 @@ const narudzbenicaSlice = createSlice({
     },
     addStavka: (state, action) => {
       state.stavke.push(action.payload);
+      state.ukupanIznos += action.payload.iznos;
     },
     removeStavka: (state, action) => {
       const stavkaId = action.payload;
       const index = state.stavke.findIndex((stavka) => stavka.id === stavkaId);
 
       if (index !== -1) {
-        state.stavke.splice(index, 1);
+        const removedStavka = state.stavke.splice(index, 1)[0];
+        state.ukupanIznos -= removedStavka.iznos;
       }
     },
     updateStavka: (state, action) => {
       const { index, stavka } = action.payload;
       state.stavke[index] = stavka;
+      state.ukupanIznos = state.stavke.reduce(
+        (total, stavka) => total + stavka.iznos,
+        0
+      );
     },
+
     setEditedStavka: (state, action) => {
       const { index, isEditing } = action.payload;
       state.stavke[index].isEditing = isEditing;

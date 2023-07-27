@@ -24,3 +24,19 @@
   background-color: #099142;
   color: #fff;
 }
+
+.selection-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+  animation: fadeOut 2s ease-in-out;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../config/apiConfig";
 import { useDispatch, useSelector } from "react-redux";
 import { addStavka } from "../store/reducers/narudzbenicaSlice";
@@ -21,6 +21,18 @@ const DodajStavkuForma = () => {
 
   const [searchResult, setSearchResult] = useState([]);
   const [error, setError] = useState("");
+  const [showSelectionMessage, setShowSelectionMessage] = useState(false);
+
+  useEffect(() => {
+    // Show the selection message for 2 seconds after izabraniProizvod changes
+    if (izabraniProizvod) {
+      setShowSelectionMessage(true);
+      const timer = setTimeout(() => {
+        setShowSelectionMessage(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [izabraniProizvod]);
 
   const handleProizvodChange = (e) => {
     dispatch(setProizvod(e.target.value));
@@ -172,21 +184,29 @@ const DodajStavkuForma = () => {
           </table>
         </div>
       )}
-      {izabraniProizvod && ( // Ako postoji izabrani proizvod, prikazujemo detalje
+      {izabraniProizvod && (
+        <>
           <div className="izabrani-proizvod-container">
             <h3>Detalji izabranog proizvoda:</h3>
             <p>Šifra: {izabraniProizvod.id}</p>
             <p>Naziv: {izabraniProizvod.naziv_proizvoda}</p>
             <p>Opis: {izabraniProizvod.opis}</p>
+            <p>Cena: {izabraniProizvod.nabavna_cena} dinara</p>
           </div>
-        ) && (
           <button
             type="button"
-            onClick={() => handleIzaberiProizvodDetalji(izabraniProizvod)}
+            onClick={() => {
+              handleIzaberiProizvodDetalji(izabraniProizvod);
+              setShowSelectionMessage(true); // Show the selection message
+            }}
           >
             Izaberi proizvod
           </button>
-        )}
+        </>
+      )}
+      {showSelectionMessage && (
+        <p className="selection-message">Proizvod je uspešno izabran!</p>
+      )}
       {error && <p className="error-message">{error}</p>}
       {error && <p className="error-message">{error}</p>}
       <div>

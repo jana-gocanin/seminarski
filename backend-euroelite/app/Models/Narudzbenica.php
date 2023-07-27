@@ -39,6 +39,7 @@ class Narudzbenica extends Model
 
             $stavka->save();
         }
+        return $stavka->iznos;
     }
 
     public function obrisi($redniBroj)

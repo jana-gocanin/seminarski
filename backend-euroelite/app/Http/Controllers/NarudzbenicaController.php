@@ -223,10 +223,10 @@ class NarudzbenicaController extends Controller
         $kolicina = $request->kolicina;
         $stavka = $narudzbenica->kreirajStavku($proizvod, $kolicina, $brojNarudzbenice);
 
-        $this->dajUkupanIznos($brojNarudzbenice);
+        $ukupno = $this->dajUkupanIznos($brojNarudzbenice);
 
         // Uspesno zavrsena akcija
-        return response()->json(['message' => 'Stavka uspesno dodata.', 'stavka'=> $stavka, 'proizvod'=>$stavka->proizvod]);
+        return response()->json(['message' => 'Stavka uspesno dodata.', 'stavka'=> $stavka, 'proizvod'=>$stavka->proizvod, 'ukupno'=>$ukupno]);
     } else {
         // Ako proizvod nije pronađen, vratite grešku
         return response()->json(['message' => 'Proizvod nije pronađen.'], 404);
@@ -289,9 +289,9 @@ class NarudzbenicaController extends Controller
 
         if ($narudzbenica) {
             $narudzbenica->obrisi($redniBroj);
-            $this->dajUkupanIznos($brojNarudzbenice);
+            $ukupno = $this->dajUkupanIznos($brojNarudzbenice);
 
-            return response()->json(['message' => 'Uspešno obrisana stavka.']);
+            return response()->json(['message' => 'Uspešno obrisana stavka.', 'ukupno'=>$ukupno]);
 
         }else{
             return response()->json(['message' => 'greska']);
@@ -308,10 +308,11 @@ class NarudzbenicaController extends Controller
         // $stavkaNarudzbenice = $narudzbenica->stavke()->where('id', $redniBroj)->first();
 
         if ($narudzbenica) {
-            $narudzbenica->izmeni($redniBroj, $novaKolicina);
-            $noviIznos = $this->dajUkupanIznos($brojNarudzbenice);
+            $noviIznos = $narudzbenica->izmeni($redniBroj, $novaKolicina);
+            //$noviIznos = $this->dajUkupanIznos($brojNarudzbenice);
+            $ukupno = $this->dajUkupanIznos($brojNarudzbenice);
 
-            return response()->json(['message' => 'Uspešno izmenjena stavka.', 'iznos'=>$noviIznos]);
+            return response()->json(['message' => 'Uspešno izmenjena stavka.', 'iznos'=>$noviIznos, 'ukupno'=> $ukupno]);
         }else{
             return response()->json(['message' => 'greska']);
         }

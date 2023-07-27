@@ -37,6 +37,7 @@ const KreirajFormaNar = () => {
     dobavljaci,
     stavke,
   } = useSelector((state) => state.narudzbenica);
+  const { ukupanIznos } = useSelector((state) => state.narudzbenica);
 
   const { naciniOtpreme, nacinOtpreme } = useSelector(
     (state) => state.nacinOtpreme
@@ -308,7 +309,7 @@ const KreirajFormaNar = () => {
       updatedStavke[editedStavkaIndex] = {
         ...stavka,
         kolicina: editedQuantity,
-        iznos: data.iznos.original.ukupan_iznos, // Novi iznos koji ste dobili sa servera
+        iznos: data.iznos, // Novi iznos koji ste dobili sa servera
       };
       dispatch(
         updateStavka({
@@ -505,6 +506,11 @@ const KreirajFormaNar = () => {
                   </td>
                 </tr>
               ))}
+              {stavke.length > 0 && (
+                <div className="ukupan-iznos-container">
+                  <p>Ukupan iznos narudžbenice: {ukupanIznos}</p>
+                </div>
+              )}
             </tbody>
           </table>
         </div>
