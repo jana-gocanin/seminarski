@@ -123,3 +123,13 @@
 select {
   color: black; /* Promeni boju teksta na crnu */
 }
+
+.ukupan-iznos-container {
+  font-size: large;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}

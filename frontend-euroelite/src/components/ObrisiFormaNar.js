@@ -1,34 +1,145 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { deleteNarudzbenica } from "../store/reducers/narudzbenicaSlice";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import "./ObrisiFormaNar.css";
+import {
+  setBrojNarudzbenice,
+  setDatumNarudzbenice,
+  setZiroRacun,
+  setNacinOtpreme,
+  setRokIsporuke,
+  setUnosDobavljaca,
+  setDobavljac,
+  setDobavljaci,
+  addStavka,
+  deleteNarudzbenica,
+  setStavke,
+} from "../store/reducers/narudzbenicaSlice";
 
 const ObrisiFormaNar = () => {
   const dispatch = useDispatch();
-  const [brojNarudzbenice, setBrojNarudzbenice] = useState("");
-  const [datumNarudzbenice, setDatumNarudzbenice] = useState("");
-  const [ziroRacun, setZiroRacun] = useState("");
-  const [nacinOtpreme, setNacinOtpreme] = useState("");
-  const [rokIsporuke, setRokIsporuke] = useState("");
-  const [dobavljac, setDobavljac] = useState("");
-  const [pretraziBroj, setPretraziBroj] = useState("");
-  const [ukupnoZaUplatu, setUkupnoZaUplatu] = useState("");
-  const [stavke, setStavke] = useState([]);
+  const {
+    brojNarudzbenice,
+    datumNarudzbenice,
+    ziroRacun,
+    nacinOtpreme,
+    rokIsporuke,
+    unosDobavljaca,
+    dobavljac,
+    dobavljaci,
+    stavke,
+    deleteNarudzbenica,
+  } = useSelector((state) => state.narudzbenica);
+  const { ukupanIznos } = useSelector((state) => state.narudzbenica);
+  const [searchInput, setSearchInput] = useState("");
+  const [showSelectionMessage, setShowSelectionMessage] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [searchError, setSearchError] = useState("");
+
+  // Function to reset the error message
+  const resetSearchError = () => {
+    setSearchError("");
+  };
+
+  useEffect(() => {
+    // Show the selection message for 2 seconds after izabraniProizvod changes
+    if (showSelectionMessage) {
+      setShowSelectionMessage(true);
+      const timer = setTimeout(() => {
+        setShowSelectionMessage(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSelectionMessage]);
+
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+    // Reset the form by dispatching necessary actions
+    dispatch(setBrojNarudzbenice(""));
+    dispatch(setDatumNarudzbenice(""));
+    dispatch(setZiroRacun(""));
+    dispatch(setNacinOtpreme(""));
+    dispatch(setRokIsporuke(""));
+    dispatch(setUnosDobavljaca(""));
+    dispatch(setDobavljac(""));
+    dispatch(setDobavljaci([]));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Dispatch the deleteNarudzbenica action
-    dispatch(deleteNarudzbenica());
-    // Reset form fields and stavke narudzbenice
-    setBrojNarudzbenice("");
-    setDatumNarudzbenice("");
-    setZiroRacun("");
-    setNacinOtpreme("");
-    setRokIsporuke("");
-    setDobavljac("");
-    setPretraziBroj("");
-    setUkupnoZaUplatu("");
-    setStavke([]);
+
+    try {
+      // Make a DELETE request to the API to delete the narudzbenica with the given ID (brojNarudzbenice)
+      await axios.delete(
+        `http://localhost:8000/api/narudzbenice/obrisi-narudzbenicu`,
+        { data: { brojNarudzbenice: searchInput } }
+      );
+
+      setShowSelectionMessage(true);
+      // After successful deletion, you can perform any additional actions, such as clearing the form or showing a success message.
+      // For example, you can dispatch the action to delete the narudzbenica from the Redux store.
+      // dispatch(deleteNarudzbenica());
+
+      // Reset the search input
+      setSearchInput("");
+      // Reset the form by dispatching necessary actions
+      dispatch(setBrojNarudzbenice(""));
+      dispatch(setDatumNarudzbenice(""));
+      dispatch(setZiroRacun(""));
+      dispatch(setNacinOtpreme(""));
+      dispatch(setRokIsporuke(""));
+      dispatch(setUnosDobavljaca(""));
+      dispatch(setDobavljac(""));
+      dispatch(setDobavljaci([]));
+      dispatch(setStavke([]));
+    } catch (error) {
+      // Handle any errors that might occur during the API request
+      console.error("Error deleting narudzbenica:", error);
+    }
+  };
+
+  const handleSearchNarudzbenice = async () => {
+    try {
+      resetSearchError();
+
+      const response = await axios.post(
+        `http://localhost:8000/api/narudzbenice/pronadji`,
+        { brojNarudzbenice: searchInput }
+      );
+
+      const searchedNarudzbenica = response.data;
+
+      if (searchedNarudzbenica) {
+        dispatch(setBrojNarudzbenice(searchedNarudzbenica.id));
+        dispatch(setDatumNarudzbenice(searchedNarudzbenica.datum));
+        dispatch(setZiroRacun(searchedNarudzbenica.ziro_racun));
+        dispatch(
+          setNacinOtpreme(searchedNarudzbenica.nacin_otpreme.naziv_nacina)
+        );
+        dispatch(setRokIsporuke(searchedNarudzbenica.rok));
+        dispatch(setUnosDobavljaca(""));
+        dispatch(setDobavljac(searchedNarudzbenica.dobavljac.naziv_dobavljaca));
+        dispatch(setDobavljaci([]));
+
+        // Add the fetched stavke to the form state
+        if (
+          searchedNarudzbenica.stavke &&
+          searchedNarudzbenica.stavke.length > 0
+        ) {
+          dispatch(
+            setStavke(
+              // Assuming your addStavka action expects an object
+              searchedNarudzbenica.stavke
+            )
+          );
+        }
+      } else {
+        setSearchError("Narudžbenica sa datim brojem nije pronađena.");
+      }
+    } catch (error) {
+      // Handle any errors that might occur during the API request
+      setSearchError("Narudzbenica ne postoji!", error);
+    }
   };
 
   return (
@@ -39,11 +150,15 @@ const ObrisiFormaNar = () => {
           <label>Pretrazi po broju:</label>
           <input
             type="text"
-            value={pretraziBroj}
-            onChange={(e) => setPretraziBroj(e.target.value)}
+            value={searchInput}
+            onChange={handleSearchInputChange}
           />
         </div>
-        <button type="button" className="pretrazi-button">
+        <button
+          type="button"
+          className="pretrazi-button"
+          onClick={handleSearchNarudzbenice}
+        >
           Pretraži
         </button>
         <div className="form-group">
@@ -53,7 +168,6 @@ const ObrisiFormaNar = () => {
             value={datumNarudzbenice}
             className="readonly-input"
             readOnly
-            onChange={(e) => setDatumNarudzbenice(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -63,24 +177,18 @@ const ObrisiFormaNar = () => {
             value={ziroRacun}
             readOnly
             className="readonly-input"
-            onChange={(e) => setZiroRacun(e.target.value)}
           />
         </div>
       </div>
       <div className="form-row">
         <div className="form-group">
           <label>Nacin otpreme:</label>
-          <select
+          <input
+            type="text"
             value={nacinOtpreme}
             readOnly
             className="readonly-input"
-            onChange={(e) => setNacinOtpreme(e.target.value)}
-          >
-            <option value="">Odaberite nacin otpreme</option>
-            <option value="opcija1">Opcija 1</option>
-            <option value="opcija2">Opcija 2</option>
-            <option value="opcija3">Opcija 3</option>
-          </select>
+          />
         </div>
         <div className="form-group">
           <label>Rok isporuke:</label>
@@ -89,7 +197,6 @@ const ObrisiFormaNar = () => {
             value={rokIsporuke}
             readOnly
             className="readonly-input"
-            onChange={(e) => setRokIsporuke(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -106,13 +213,13 @@ const ObrisiFormaNar = () => {
           <label>Za uplatu:</label>
           <input
             type="text"
-            value={ukupnoZaUplatu}
-            onChange={(e) => setUkupnoZaUplatu(e.target.value)}
+            value={ukupanIznos}
             readOnly
             className="readonly-input"
           />
         </div>
       </div>
+      {searchError && <p className="error-message">{searchError}</p>}
       <div className="stavke-table-container">
         <table className="stavke-table">
           <thead>
@@ -127,19 +234,25 @@ const ObrisiFormaNar = () => {
           <tbody>
             {stavke.map((stavka, index) => (
               <tr key={index}>
-                <td>{stavka.broj}</td>
-                <td>{stavka.naziv}</td>
+                <td>{stavka.id}</td>
+                <td>{stavka.proizvod.naziv_proizvoda}</td>
                 <td>{stavka.kolicina}</td>
-                <td>{stavka.vrednost}</td>
-                <td>{stavka.jedinicaMere}</td>
+                <td>{stavka.iznos}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <button type="submit" className="obrisi-button">
+      <button
+        type="submit"
+        className="obrisi-button"
+        // onClick={handleDeleteNarudzbenica}
+      >
         Obriši Narudžbenicu
       </button>
+      {showSelectionMessage && (
+        <p className="selection-message">Narudzbenica je obrisana!</p>
+      )}
     </form>
   );
 };

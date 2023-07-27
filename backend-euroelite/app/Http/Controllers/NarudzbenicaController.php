@@ -270,7 +270,7 @@ class NarudzbenicaController extends Controller
 
         // Provera da li je narudžbenica pronađena
         if ($narudzbenica) {
-            $narudzbenica = Narudzbenica::with('stavke')->find($brojNarudzbenice); //da bih u odg dobila i sve stavke
+            $narudzbenica = Narudzbenica::with('stavke.proizvod', 'dobavljac', 'nacinOtpreme')->find($brojNarudzbenice); //da bih u odg dobila i sve stavke
             // Ako je pronađena, vratite je kao JSON odgovor
             return response()->json($narudzbenica);
         } else {

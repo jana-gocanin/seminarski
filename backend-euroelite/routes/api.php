@@ -49,9 +49,9 @@ Route::group(['prefix' => 'proizvodi'], function () {
     Route::post('dodaj-stavku',  [NarudzbenicaController::class, 'dodajStavku']);
 });
 
-Route::get('/narudzbenice/pronadji', [NarudzbenicaController::class, 'pronadjiNarudzbenicu']);
+Route::post('/narudzbenice/pronadji', [NarudzbenicaController::class, 'pronadjiNarudzbenicu']);
 Route::post('/stavka/obrisi', [NarudzbenicaController::class, 'obrisi']);
 Route::post('/stavka/izmeni', [NarudzbenicaController::class, 'izmeni']);
-Route::post('/narudzbenice/obrisi-narudzbenicu', [NarudzbenicaController::class, 'obrisiNarudzbenicu']);
+Route::delete('/narudzbenice/obrisi-narudzbenicu', [NarudzbenicaController::class, 'obrisiNarudzbenicu']);
 
 Route::post('/narudzbenice/zapamtiUnos', [NarudzbenicaController::class, 'zapamtiUnos']);

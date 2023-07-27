@@ -25,14 +25,14 @@ const DodajStavkuForma = () => {
 
   useEffect(() => {
     // Show the selection message for 2 seconds after izabraniProizvod changes
-    if (izabraniProizvod) {
+    if (showSelectionMessage) {
       setShowSelectionMessage(true);
       const timer = setTimeout(() => {
         setShowSelectionMessage(false);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [izabraniProizvod]);
+  }, [showSelectionMessage]);
 
   const handleProizvodChange = (e) => {
     dispatch(setProizvod(e.target.value));
@@ -163,8 +163,9 @@ const DodajStavkuForma = () => {
           <table className="proizvodi-table">
             <thead>
               <tr>
-                <th>Šifra proizvoda</th>
-                <th>Naziv proizvoda</th>
+                <th>Šifra</th>
+                <th>Naziv</th>
+                <th>Cena</th>
                 <th></th>
               </tr>
             </thead>
@@ -172,11 +173,14 @@ const DodajStavkuForma = () => {
               {searchResult.map((proizvod) => (
                 <tr
                   key={proizvod.id}
-                  onClick={() => handleIzaberiProizvod(proizvod)}
+                  onClick={() => {
+                    handleIzaberiProizvod(proizvod);
+                  }}
                   className={proizvod === izabraniProizvod ? "selected" : ""} // Ovde proveravamo da li je trenutni proizvod izabran
                 >
                   <td>{proizvod.id}</td>
                   <td>{proizvod.naziv_proizvoda}</td>
+                  <td>{proizvod.nabavna_cena}</td>
                   <td></td>
                 </tr>
               ))}

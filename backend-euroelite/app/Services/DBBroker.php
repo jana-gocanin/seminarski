@@ -141,7 +141,8 @@ class DBBroker
         $narudzbenica = Narudzbenica::find($id);
 
         if ($narudzbenica) {
-            // Ako je pronađena narudžbenica, obriši je
+            // Ako je pronađena narudžbenica, obriši je i njene stavke
+            $narudzbenica->stavke()->delete();
             $narudzbenica->delete();
             return true; // Uspesno obrisana narudžbenica
         } else {

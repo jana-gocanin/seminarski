@@ -58,6 +58,13 @@ const narudzbenicaSlice = createSlice({
         state.ukupanIznos -= removedStavka.iznos;
       }
     },
+    setStavke: (state, action) => {
+      state.stavke = action.payload;
+      state.ukupanIznos = action.payload.reduce(
+        (total, stavka) => total + parseFloat(stavka.iznos),
+        0
+      );
+    },
     updateStavka: (state, action) => {
       const { index, stavka } = action.payload;
       state.stavke[index] = stavka;
@@ -105,6 +112,7 @@ export const {
   setEditedStavka,
   updateStavkaKolicina,
   deleteNarudzbenica,
+  setStavke,
 } = narudzbenicaSlice.actions;
 
 export default narudzbenicaSlice.reducer;

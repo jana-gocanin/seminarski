@@ -36,6 +36,7 @@ const KreirajFormaNar = () => {
     dobavljac,
     dobavljaci,
     stavke,
+    deleteNarudzbenica,
   } = useSelector((state) => state.narudzbenica);
   const { ukupanIznos } = useSelector((state) => state.narudzbenica);
 
@@ -53,9 +54,78 @@ const KreirajFormaNar = () => {
     dispatch(fetchNaciniOtpreme());
   }, [dispatch]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      // Prompt the user with a confirmation dialog before leaving the page
+      event.preventDefault();
+      event.returnValue = ""; // This is required for Chrome compatibility
+      dispatch(deleteNarudzbenica());
+    };
+
+    // Add the event listener when the component mounts
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      // If the user confirms leaving (by closing the tab/window),
+      // then delete the order.
+      handleDeleteOrder();
+    };
+  }, [brojNarudzbenice]);
+
+  const handleDeleteOrder = async () => {
+    try {
+      // Make the API call to delete the order
+      const response = await fetch(
+        `${BASE_URL}/narudzbenice/obrisi-narudzbenicu`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brojNarudzbenice, // Assuming brojNarudzbenice is the identifier for the order
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        // Handle error if needed
+        return;
+      }
+
+      // Handle the success response or any other necessary actions
+      console.log("Order deleted successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const isFormValid = () => {
+    if (
+      !brojNarudzbenice ||
+      !datumNarudzbenice ||
+      !ziroRacun ||
+      !nacinOtpreme ||
+      !rokIsporuke ||
+      !dobavljac
+    ) {
+      return false;
+    }
+
+    if (stavke.length === 0) {
+      return false;
+    }
+
+    return true;
+  };
+
   const handleDatumNarudzbeniceChange = async (e) => {
     const newDatumNarudzbenice = e.target.value;
-    dispatch(setRokIsporuke(newDatumNarudzbenice));
+    dispatch(setDatumNarudzbenice(newDatumNarudzbenice));
 
     // Make the API call to postaviDatumNar
     try {
@@ -137,7 +207,7 @@ const KreirajFormaNar = () => {
 
   const handleRokIsporukeChange = async (e) => {
     const newRok = e.target.value;
-    dispatch(setDatumNarudzbenice(newRok));
+    dispatch(setRokIsporuke(newRok));
 
     try {
       const response = await fetch(`${BASE_URL}/postaviRokIsporuke`, {
@@ -327,17 +397,52 @@ const KreirajFormaNar = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Logika za slanje podataka na server
-    // Resetovanje polja forme
-    // dispatch(setBrojNarudzbenice(""));
-    // dispatch(setDatumNarudzbenice(""));
-    // dispatch(setZiroRacun(""));
-    // dispatch(setNacinOtpreme(""));
-    // dispatch(setRokIsporuke(""));
-    // dispatch(setUnosDobavljaca(""));
-    // dispatch(setDobavljac(null));
+  const handleSubmit = async () => {
+    if (!isFormValid()) {
+      // Show an error message or take appropriate action for invalid form
+      console.error("Form is not valid. Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      // Call the API route http://localhost:8000/api/narudzbenice/zapamtiUnos
+      const response = await fetch(`${BASE_URL}/narudzbenice/zapamtiUnos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          brojNarudzbenice,
+          datumNarudzbenice,
+          ziroRacun,
+          nacinOtpreme,
+          rokIsporuke,
+          dobavljac,
+          stavke,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Error:", response.statusText);
+        return;
+      }
+
+      // Handle the success response or any other necessary actions
+      console.log("Form data saved successfully!");
+
+      // Reset the form by dispatching necessary actions
+      dispatch(setBrojNarudzbenice(""));
+      dispatch(setDatumNarudzbenice(""));
+      dispatch(setZiroRacun(""));
+      dispatch(setNacinOtpreme(""));
+      dispatch(setRokIsporuke(""));
+      dispatch(setUnosDobavljaca(""));
+      dispatch(setDobavljac(null));
+      dispatch(setDobavljaci([]));
+      dispatch(updateStavkaKolicina(null)); // Reset edited stavka index and quantity
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -359,6 +464,7 @@ const KreirajFormaNar = () => {
             type="date"
             value={datumNarudzbenice}
             onChange={handleDatumNarudzbeniceChange}
+            required
           />
         </div>
         <div className="form-group">
@@ -368,6 +474,7 @@ const KreirajFormaNar = () => {
             value={ziroRacun}
             onBlur={handleZiroRacunChangeBlur}
             onChange={handleZiroRacunChange}
+            required
           />
         </div>
         <div className="form-group">
@@ -387,6 +494,7 @@ const KreirajFormaNar = () => {
             type="date"
             value={rokIsporuke}
             onChange={handleRokIsporukeChange}
+            required
           />
         </div>
       </div>
