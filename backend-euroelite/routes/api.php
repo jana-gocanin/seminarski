@@ -61,3 +61,4 @@ Route::post('/nacin/kreirajNacin', [NacinOtpremeController::class, 'kreirajNacin
 Route::get('/nacin/vratiBroj', [NacinOtpremeController::class, 'vratiBrojNacOtp']);
 Route::delete('/nacin/obrisi', [NacinOtpremeController::class, 'obrisiNacinOtpreme']);
 Route::put('/nacin/izmeni', [NacinOtpremeController::class, 'izmeniNacinOtpreme']);
+Route::get('/nacin/vratiBroj', [NacinOtpremeController::class,'vratiBrojNacOtp']);

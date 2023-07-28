@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchNaciniOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import {
+  fetchNaciniOtpreme,
+  setNacinOtpreme,
+  removeNacinOtpreme,
+} from "../store/reducers/nacinOtpremeSlice";
 import "./IzmeniNacinOtpreme.css";
+import { BASE_URL } from "../config/apiConfig";
 
 const IzmeniNacinOtpreme = () => {
   const [izmenaNacinaOtpreme, setIzmenaNacinaOtpreme] = useState("");
@@ -16,21 +21,76 @@ const IzmeniNacinOtpreme = () => {
     setIzabraniNacinOtpreme(nacinOtpreme);
   };
 
-  const handleSacuvajIzmenu = () => {
-    // if (izmenaNacinaOtpreme.trim() === "") {
-    //   return;
-    // }
-    // const izmenjenNacinOtpreme = {
-    //   ...izabraniNacinOtpreme,
-    //   naziv: izmenaNacinaOtpreme,
-    // };
-    // dispatch(sacuvajNacinOtpreme(izmenjenNacinOtpreme));
-    // setIzmenaNacinaOtpreme("");
-    // setIzabraniNacinOtpreme(null);
+  useEffect(() => {
+    dispatch(fetchNaciniOtpreme());
+  }, [dispatch]);
+
+  const handleSacuvajIzmenu = async () => {
+    if (izmenaNacinaOtpreme.trim() === "") {
+      return;
+    }
+    const updatedNacinOtpreme = {
+      ...izabraniNacinOtpreme,
+      naziv_nacina: izmenaNacinaOtpreme,
+    };
+
+    try {
+      const response = await fetch(`${BASE_URL}/nacin/izmeni`, {
+        method: "PUT",
+        body: JSON.stringify({
+          naziv: updatedNacinOtpreme.naziv_nacina,
+          id: updatedNacinOtpreme.id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        // Dispatch the action to update the Redux state
+        dispatch(setNacinOtpreme(updatedNacinOtpreme));
+        setIzmenaNacinaOtpreme("");
+        setIzabraniNacinOtpreme(null);
+        console.log("Uspešno izmenjen način otpreme.");
+      } else {
+        console.error(
+          "Greška pri izmeni načina otpreme. Status:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Greška prilikom komunikacije sa serverom:", error);
+    }
   };
 
-  const handleObrisiNacinOtpreme = (nacinOtpreme) => {
-    // Implement logic to delete the selected nacinOtpreme
+  const handleOdustaniIzmena = () => {
+    setIzmenaNacinaOtpreme("");
+    setIzabraniNacinOtpreme(null);
+  };
+
+  const handleObrisiNacinOtpreme = async (nacinOtpreme) => {
+    try {
+      const response = await fetch(`${BASE_URL}/nacin/obrisi`, {
+        method: "DELETE",
+        body: JSON.stringify({ id: nacinOtpreme.id }), // Assuming your API expects the "id" of the "nacinOtpreme" to be passed in the request body
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        // Dispatch the action to update the Redux state
+        dispatch(removeNacinOtpreme(nacinOtpreme.id));
+        console.log("Uspešno obrisan način otpreme.");
+      } else {
+        console.error(
+          "Greška pri brisanju načina otpreme. Status:",
+          response.status
+        );
+      }
+    } catch (error) {
+      console.error("Greška prilikom komunikacije sa serverom:", error);
+    }
   };
 
   return (
@@ -47,24 +107,25 @@ const IzmeniNacinOtpreme = () => {
         </thead>
         <tbody>
           {naciniOtpreme.map((nacinOtpreme) => (
-            <tr key={nacinOtpreme.broj}>
-              <td>{nacinOtpreme.broj}</td>
+            <tr key={nacinOtpreme.id}>
+              <td>{nacinOtpreme.id}</td>
               <td>
-                {izabraniNacinOtpreme &&
-                izabraniNacinOtpreme.broj === nacinOtpreme.broj ? (
+                {nacinOtpreme === izabraniNacinOtpreme ? (
                   <input
                     type="text"
                     value={izmenaNacinaOtpreme}
                     onChange={(e) => setIzmenaNacinaOtpreme(e.target.value)}
                   />
                 ) : (
-                  nacinOtpreme.naziv
+                  nacinOtpreme.naziv_nacina
                 )}
               </td>
               <td>
-                {izabraniNacinOtpreme &&
-                izabraniNacinOtpreme.broj === nacinOtpreme.broj ? (
-                  <button onClick={handleSacuvajIzmenu}>Sačuvaj</button>
+                {nacinOtpreme === izabraniNacinOtpreme ? (
+                  <div>
+                    <button onClick={handleSacuvajIzmenu}>Sačuvaj</button>
+                    <button onClick={handleOdustaniIzmena}>Odustani</button>
+                  </div>
                 ) : (
                   <button
                     onClick={() => handleIzmenaNacinaOtpreme(nacinOtpreme)}

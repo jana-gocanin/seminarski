@@ -8,6 +8,7 @@ import "./MenuForm.css";
 import KreirajNacinOtpreme from "./KreirajNacinOtpreme";
 import IzmeniNacinOtpreme from "./IzmeniNacinOtpreme";
 import { setBrojNarudzbenice } from "../store/reducers/narudzbenicaSlice";
+import { setBrojNacinaOtpreme } from "../store/reducers/nacinOtpremeSlice";
 
 import { BASE_URL } from "../config/apiConfig";
 
@@ -38,6 +39,26 @@ const MenuForm = () => {
 
           // Dispatch the action to update the Redux state with the new brojNarudzbenice
           dispatch(setBrojNarudzbenice(brojNarudzbenice));
+        } else {
+          console.error("Request was not successful. Status:", response.status);
+        }
+      } catch (error) {
+        // Obrada grešaka prilikom komunikacije sa serverom
+        console.error("Greška prilikom komunikacije sa serverom:", error);
+      }
+    } else if (option === "kreirajOtpremu") {
+      try {
+        // Pozivamo API za dobijanje broja nacina otpreme
+        const response = await fetch(`${BASE_URL}/nacin/vratiBroj`, {
+          method: "GET",
+        });
+        const data = await response.json();
+
+        // Ako je odgovor uspešan, uvećavamo broj nacina otpreme za 1 i ažuriramo Redux stanje
+        if (response.ok) {
+          const brojNacinaOtpreme = data + 1;
+          dispatch(setBrojNacinaOtpreme(brojNacinaOtpreme));
+          // console.log(brojNacinaOtpreme);
         } else {
           console.error("Request was not successful. Status:", response.status);
         }

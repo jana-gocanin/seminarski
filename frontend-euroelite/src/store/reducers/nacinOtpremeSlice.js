@@ -21,6 +21,7 @@ export const fetchNaciniOtpreme = createAsyncThunk(
 const initialState = {
   naciniOtpreme: [],
   nacinOtpreme: "",
+  brojNacinaOtpreme: 0,
 };
 
 const nacinOtpremeSlice = createSlice({
@@ -28,9 +29,26 @@ const nacinOtpremeSlice = createSlice({
   initialState,
   reducers: {
     setNacinOtpreme: (state, action) => {
-      state.nacinOtpreme = action.payload;
+      const index = state.naciniOtpreme.findIndex(
+        (nacin) => nacin.id === action.payload.id
+      );
+
+      // Update the nacinOtpreme if found
+      if (index !== -1) {
+        state.naciniOtpreme[index] = action.payload;
+      }
+    },
+    setBrojNacinaOtpreme: (state, action) => {
+      // Dodajemo reducer za postavljanje broja nacina otpreme
+      state.brojNacinaOtpreme = action.payload;
+    },
+    removeNacinOtpreme: (state, action) => {
+      state.naciniOtpreme = state.naciniOtpreme.filter(
+        (nacin) => nacin.id !== action.payload
+      );
     },
   },
+
   extraReducers: (builder) => {
     builder.addCase(fetchNaciniOtpreme.fulfilled, (state, action) => {
       state.naciniOtpreme = action.payload;
@@ -38,6 +56,7 @@ const nacinOtpremeSlice = createSlice({
   },
 });
 
-export const { setNacinOtpreme } = nacinOtpremeSlice.actions;
+export const { setNacinOtpreme, setBrojNacinaOtpreme, removeNacinOtpreme } =
+  nacinOtpremeSlice.actions;
 
 export default nacinOtpremeSlice.reducer;
