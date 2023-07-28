@@ -7,4 +7,96 @@
   border-top: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+  color: #107122;
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+}
+
+/* Styling for the table displaying naciniOtpreme */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+}
+
+th {
+  background-color: #6faa51;
+  color: #fff;
+  text-transform: uppercase;
+  padding: 10px;
+  text-align: left;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Styling for the input field during editing */
+input[type="text"] {
+  width: 90%;
+  padding: 5px;
+}
+
+/* Styling for the actions column */
+td:last-child {
+  display: flex;
+  align-items: center;
+}
+
+/* Styling for the action buttons */
+button {
+  color: #fff;
+  padding: 8px 12px;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the "Obriši" button */
+button.obrisi {
+  background-color: #dc3545;
+}
+
+/* Styling for the "Sačuvaj" button */
+button.sacuvaj {
+  background-color: #28a745;
+}
+
+/* Styling for the container of buttons while editing */
+.button-container {
+  display: flex;
+}
+
+/* Styling for the selected row */
+tr.selected {
+  background-color: #107122;
+  color: #fff;
+}
+
+/* Styling for the table row on hover */
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Styling for the "Uspješno izmijenjen način otpreme" message */
+.success-message {
+  color: green;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Styling for the error message */
+.error-message {
+  color: red;
+  font-size: 16px;
+  margin-top: 10px;
 }

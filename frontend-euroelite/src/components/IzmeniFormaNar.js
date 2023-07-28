@@ -18,12 +18,12 @@ import {
   setEditedStavka,
   updateStavkaKolicina,
   setStavke,
+  setNacinOtpreme,
+  deleteNarudzbenica,
 } from "../store/reducers/narudzbenicaSlice";
 import "./KreirajFormaNar.css";
-import {
-  setNacinOtpreme,
-  fetchNaciniOtpreme,
-} from "../store/reducers/nacinOtpremeSlice";
+import { fetchNaciniOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import { deleteStavke } from "../store/reducers/stavkaNarudzbeniceSlice";
 
 const IzmeniFormaNar = () => {
   const dispatch = useDispatch();
@@ -31,18 +31,18 @@ const IzmeniFormaNar = () => {
     brojNarudzbenice,
     datumNarudzbenice,
     ziroRacun,
-    //nacinOtpreme,
+    nacinOtpreme,
     rokIsporuke,
     unosDobavljaca,
     dobavljac,
     dobavljaci,
     stavke,
-    deleteNarudzbenica,
+    // deleteNarudzbenica,
   } = useSelector((state) => state.narudzbenica);
   const { ukupanIznos } = useSelector((state) => state.narudzbenica);
 
-  const { naciniOtpreme, nacinOtpreme } = useSelector(
-    (state) => state.nacinOtpreme
+  const naciniOtpreme = useSelector(
+    (state) => state.nacinOtpreme.naciniOtpreme
   );
   const [searchResult, setSearchResult] = useState([]);
   const [selectedDobavljac, setSelectedDobavljac] = useState(null);
@@ -67,7 +67,6 @@ const IzmeniFormaNar = () => {
     setSearchInput(e.target.value);
   };
   const handleSearchNarudzbenice = async () => {
-
     resetSearchError();
 
     try {
@@ -432,17 +431,19 @@ const IzmeniFormaNar = () => {
 
       // Handle the success response or any other necessary actions
       console.log("Form data saved successfully!");
+      dispatch(deleteNarudzbenica());
+      dispatch(deleteStavke());
 
       // Reset the form by dispatching necessary actions
-      dispatch(setBrojNarudzbenice(""));
-      dispatch(setDatumNarudzbenice(""));
-      dispatch(setZiroRacun(""));
-      dispatch(setNacinOtpreme(""));
-      dispatch(setRokIsporuke(""));
-      dispatch(setUnosDobavljaca(""));
-      dispatch(setDobavljac(null));
-      dispatch(setDobavljaci([]));
-      dispatch(updateStavkaKolicina(null)); // Reset edited stavka index and quantity
+      // dispatch(setBrojNarudzbenice(""));
+      // dispatch(setDatumNarudzbenice(""));
+      // dispatch(setZiroRacun(""));
+      // dispatch(setNacinOtpreme(""));
+      // dispatch(setRokIsporuke(""));
+      // dispatch(setUnosDobavljaca(""));
+      // dispatch(setDobavljac(""));
+      // dispatch(setDobavljaci([]));
+      // dispatch(updateStavkaKolicina(null)); // Reset edited stavka index and quantity
     } catch (error) {
       console.error("Error:", error);
     }
@@ -451,7 +452,7 @@ const IzmeniFormaNar = () => {
   return (
     <form onSubmit={handleSubmit} className="form">
       <h2>Izmena narudzbenice</h2>
-       {searchError && <p className="error-message">{searchError}</p>}
+      {searchError && <p className="error-message">{searchError}</p>}
       <div className="form-row">
         <div className="form-group">
           <label>Broj narudžbenice:</label>
@@ -512,7 +513,7 @@ const IzmeniFormaNar = () => {
         <label>Dobavljac:</label>
         <input
           type="text"
-          value={dobavljac}
+          value={dobavljac ? dobavljac : ""}
           readOnly
           className="readonly-input"
         />

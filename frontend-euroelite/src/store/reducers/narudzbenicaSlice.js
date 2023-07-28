@@ -70,14 +70,6 @@ const narudzbenicaSlice = createSlice({
       );
     },
 
-    setEditedStavka: (state, action) => {
-      const { index, isEditing } = action.payload;
-      state.stavke[index].isEditing = isEditing;
-    },
-    updateStavkaKolicina: (state, action) => {
-      const { index, kolicina } = action.payload;
-      state.stavke[index].kolicina = kolicina;
-    },
     deleteNarudzbenica: (state) => {
       // Reset the state to initial values or clear the narudzbenica data
       state.brojNarudzbenice = "";
@@ -86,9 +78,17 @@ const narudzbenicaSlice = createSlice({
       state.nacinOtpreme = "";
       state.rokIsporuke = "";
       state.unosDobavljaca = "";
-      state.dobavljac = null;
+      state.dobavljac = "";
       state.dobavljaci = [];
       state.stavke = [];
+    },
+    setEditedStavka: (state, action) => {
+      const { index, isEditing } = action.payload;
+      state.stavke[index].isEditing = isEditing;
+    },
+    updateStavkaKolicina: (state, action) => {
+      const { index, kolicina } = action.payload;
+      state.stavke[index].kolicina = kolicina;
     },
   },
 });

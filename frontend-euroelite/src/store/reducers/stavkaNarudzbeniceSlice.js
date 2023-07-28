@@ -24,10 +24,17 @@ const stavkaNarudzbeniceSlice = createSlice({
     },
     setKolicina: (state, action) => {
       state.kolicina = action.payload;
-      },
-      setIzabraniProizvod: (state, action) => {
-        state.izabraniProizvod = action.payload;
-      },
+    },
+    setIzabraniProizvod: (state, action) => {
+      state.izabraniProizvod = action.payload;
+    },
+    deleteStavke: (state) => {
+      state.proizvod = ""; // Dodali smo proizvod i kolicinu u stanje
+      state.kolicina = "";
+      state.izabraniProizvod = null; // Dodali smo izabraniProizvod u stanje
+      state.stavke = [];
+    },
+
     // addStavka: (state, action) => {
     //   state.stavke.push(action.payload);
     // },
@@ -47,5 +54,6 @@ const stavkaNarudzbeniceSlice = createSlice({
   },
 });
 
-export const { setProizvod, setKolicina, setIzabraniProizvod } = stavkaNarudzbeniceSlice.actions;
+export const { setProizvod, setKolicina, setIzabraniProizvod, deleteStavke } =
+  stavkaNarudzbeniceSlice.actions;
 export default stavkaNarudzbeniceSlice.reducer;

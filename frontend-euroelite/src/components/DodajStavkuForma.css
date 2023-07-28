@@ -28,7 +28,7 @@
 .selection-message {
   color: green;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 16px;
   animation: fadeOut 2s ease-in-out;
 }
 
@@ -39,4 +39,69 @@
   to {
     opacity: 0;
   }
+}
+
+.proizvodi-table-container {
+  margin-top: 20px;
+}
+
+.proizvodi-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #107122;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+
+.proizvodi-table th,
+.proizvodi-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.proizvodi-table th {
+  background-color: #0fa62b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+
+.proizvodi-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Styling for the selected product row */
+.proizvodi-table tr.selected {
+  background-color: #107122;
+  color: #fff;
+}
+
+/* Styling for the details of the selected product */
+.izabrani-proizvod-container {
+  color: #107122;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+
+button[type="button"]:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the "Izaberi proizvod" button */
+
+button[type="button"]:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the "Proizvod je uspešno izabran!" message */
+.selection-message {
+  color: green;
+  font-size: 16px;
+  margin-top: 10px;
 }

@@ -17,12 +17,12 @@ import {
   updateStavka,
   setEditedStavka,
   updateStavkaKolicina,
+  deleteNarudzbenica,
+  setNacinOtpreme,
 } from "../store/reducers/narudzbenicaSlice";
 import "./KreirajFormaNar.css";
-import {
-  setNacinOtpreme,
-  fetchNaciniOtpreme,
-} from "../store/reducers/nacinOtpremeSlice";
+import { fetchNaciniOtpreme } from "../store/reducers/nacinOtpremeSlice";
+import { deleteStavke } from "../store/reducers/stavkaNarudzbeniceSlice";
 
 const KreirajFormaNar = () => {
   const dispatch = useDispatch();
@@ -30,24 +30,25 @@ const KreirajFormaNar = () => {
     brojNarudzbenice,
     datumNarudzbenice,
     ziroRacun,
-    // nacinOtpreme,
+    nacinOtpreme,
     rokIsporuke,
     unosDobavljaca,
     dobavljac,
     dobavljaci,
     stavke,
-    deleteNarudzbenica,
+    //deleteNarudzbenica,
   } = useSelector((state) => state.narudzbenica);
   const { ukupanIznos } = useSelector((state) => state.narudzbenica);
 
-  const { naciniOtpreme, nacinOtpreme } = useSelector(
-    (state) => state.nacinOtpreme
+  const naciniOtpreme = useSelector(
+    (state) => state.nacinOtpreme.naciniOtpreme
   );
   const [searchResult, setSearchResult] = useState([]);
   const [selectedDobavljac, setSelectedDobavljac] = useState(null);
   const [editedQuantity, setEditedQuantity] = useState("");
   const [editedStavkaIndex, setEditedStavkaIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Dohvati sve načine otpreme kada se komponenta montira
@@ -59,7 +60,7 @@ const KreirajFormaNar = () => {
       // Prompt the user with a confirmation dialog before leaving the page
       event.preventDefault();
       event.returnValue = ""; // This is required for Chrome compatibility
-      dispatch(deleteNarudzbenica());
+      // dispatch(deleteNarudzbenica());
     };
 
     // Add the event listener when the component mounts
@@ -102,6 +103,8 @@ const KreirajFormaNar = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+    dispatch(deleteNarudzbenica());
+    dispatch(deleteStavke());
   };
 
   const isFormValid = () => {
@@ -231,6 +234,7 @@ const KreirajFormaNar = () => {
 
   const handleUnosDobavljacaChange = (e) => {
     dispatch(setUnosDobavljaca(e.target.value));
+    setError(null);
   };
 
   const handleIzaberiDobavljacaTableClick = async (dobavljac) => {
@@ -305,6 +309,10 @@ const KreirajFormaNar = () => {
       }
 
       const data = await response.json();
+      if (data.length === 0) {
+        setError("Nije pronadjen dobavljac");
+        return;
+      }
       setSearchResult(data); // Postavi rezultat pretrage u stanje
     } catch (error) {
       console.error("Error:", error);
@@ -430,16 +438,19 @@ const KreirajFormaNar = () => {
       // Handle the success response or any other necessary actions
       console.log("Form data saved successfully!");
 
+      dispatch(deleteNarudzbenica());
+      dispatch(deleteStavke());
+
       // Reset the form by dispatching necessary actions
-      dispatch(setBrojNarudzbenice(""));
-      dispatch(setDatumNarudzbenice(""));
-      dispatch(setZiroRacun(""));
-      dispatch(setNacinOtpreme(""));
-      dispatch(setRokIsporuke(""));
-      dispatch(setUnosDobavljaca(""));
-      dispatch(setDobavljac(null));
-      dispatch(setDobavljaci([]));
-      dispatch(updateStavkaKolicina(null)); // Reset edited stavka index and quantity
+      // dispatch(setBrojNarudzbenice(""));
+      // dispatch(setDatumNarudzbenice(""));
+      // dispatch(setZiroRacun(""));
+      // dispatch(setNacinOtpreme(""));
+      // dispatch(setRokIsporuke(""));
+      // dispatch(setUnosDobavljaca(""));
+      // dispatch(setDobavljac(""));
+      // dispatch(setDobavljaci([]));
+      // dispatch(updateStavkaKolicina(null)); // Reset edited stavka index and quantity
     } catch (error) {
       console.error("Error:", error);
     }
@@ -479,7 +490,11 @@ const KreirajFormaNar = () => {
         </div>
         <div className="form-group">
           <label>Nacin otpreme:</label>
-          <select value={nacinOtpreme} onChange={handleNacinOtpremeChange}>
+          <select
+            key={nacinOtpreme}
+            value={nacinOtpreme}
+            onChange={handleNacinOtpremeChange}
+          >
             <option value="">Odaberite nacin otpreme</option>
             {naciniOtpreme.map((nacin) => (
               <option key={nacin.id} value={nacin.id}>
@@ -554,6 +569,7 @@ const KreirajFormaNar = () => {
           </button>
         </div>
       )}
+      {error && <p className="error-message">{error}</p>}
       <DodajStavkuForma />
       {stavke.length > 0 && (
         <div className="stavke-table-container">

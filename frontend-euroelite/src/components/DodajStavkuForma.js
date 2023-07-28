@@ -20,7 +20,7 @@ const DodajStavkuForma = () => {
   );
 
   const [searchResult, setSearchResult] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [showSelectionMessage, setShowSelectionMessage] = useState(false);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ const DodajStavkuForma = () => {
 
   const handleProizvodChange = (e) => {
     dispatch(setProizvod(e.target.value));
+    setError(null);
   };
 
   const handleKolicinaChange = (e) => {
@@ -118,9 +119,13 @@ const DodajStavkuForma = () => {
       }
 
       const data = await response.json();
+      if (data.length === 0) {
+        setError("Nije pronadjen proizvod");
+        return;
+      }
       setSearchResult(data); // Postavi rezultat pretrage u stanje
     } catch (error) {
-      console.error("Error:", error);
+      setError("Error:", error);
     }
   };
 
@@ -166,7 +171,6 @@ const DodajStavkuForma = () => {
                 <th>Šifra</th>
                 <th>Naziv</th>
                 <th>Cena</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -181,7 +185,6 @@ const DodajStavkuForma = () => {
                   <td>{proizvod.id}</td>
                   <td>{proizvod.naziv_proizvoda}</td>
                   <td>{proizvod.nabavna_cena}</td>
-                  <td></td>
                 </tr>
               ))}
             </tbody>
@@ -211,7 +214,6 @@ const DodajStavkuForma = () => {
       {showSelectionMessage && (
         <p className="selection-message">Proizvod je uspešno izabran!</p>
       )}
-      {error && <p className="error-message">{error}</p>}
       {error && <p className="error-message">{error}</p>}
       <div>
         <button type="button" onClick={handleDodajStavku}>

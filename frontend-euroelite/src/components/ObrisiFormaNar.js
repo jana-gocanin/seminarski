@@ -15,6 +15,7 @@ import {
   deleteNarudzbenica,
   setStavke,
 } from "../store/reducers/narudzbenicaSlice";
+import { deleteStavke } from "../store/reducers/stavkaNarudzbeniceSlice";
 
 const ObrisiFormaNar = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const ObrisiFormaNar = () => {
     dobavljac,
     dobavljaci,
     stavke,
-    deleteNarudzbenica,
+    // deleteNarudzbenica,
   } = useSelector((state) => state.narudzbenica);
   const { ukupanIznos } = useSelector((state) => state.narudzbenica);
   const [searchInput, setSearchInput] = useState("");
@@ -55,14 +56,16 @@ const ObrisiFormaNar = () => {
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
     // Reset the form by dispatching necessary actions
-    dispatch(setBrojNarudzbenice(""));
-    dispatch(setDatumNarudzbenice(""));
-    dispatch(setZiroRacun(""));
-    dispatch(setNacinOtpreme(""));
-    dispatch(setRokIsporuke(""));
-    dispatch(setUnosDobavljaca(""));
-    dispatch(setDobavljac(""));
-    dispatch(setDobavljaci([]));
+    // dispatch(setBrojNarudzbenice(""));
+    // dispatch(setDatumNarudzbenice(""));
+    // dispatch(setZiroRacun(""));
+    // dispatch(setNacinOtpreme(""));
+    // dispatch(setRokIsporuke(""));
+    // dispatch(setUnosDobavljaca(""));
+    // dispatch(setDobavljac(""));
+    // dispatch(setDobavljaci([]));
+    dispatch(deleteNarudzbenica());
+    dispatch(deleteStavke());
   };
 
   const handleSubmit = async (e) => {
@@ -83,15 +86,8 @@ const ObrisiFormaNar = () => {
       // Reset the search input
       setSearchInput("");
       // Reset the form by dispatching necessary actions
-      dispatch(setBrojNarudzbenice(""));
-      dispatch(setDatumNarudzbenice(""));
-      dispatch(setZiroRacun(""));
-      dispatch(setNacinOtpreme(""));
-      dispatch(setRokIsporuke(""));
-      dispatch(setUnosDobavljaca(""));
-      dispatch(setDobavljac(""));
-      dispatch(setDobavljaci([]));
-      dispatch(setStavke([]));
+      dispatch(deleteNarudzbenica());
+      dispatch(deleteStavke());
     } catch (error) {
       // Handle any errors that might occur during the API request
       console.error("Error deleting narudzbenica:", error);
@@ -228,7 +224,6 @@ const ObrisiFormaNar = () => {
               <th>Naziv</th>
               <th>Količina</th>
               <th>Vrednost</th>
-              <th>Jedinica mere</th>
             </tr>
           </thead>
           <tbody>
