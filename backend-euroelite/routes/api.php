@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\NarudzbenicaController;
+use App\Http\Controllers\NacinOtpremeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +56,8 @@ Route::post('/stavka/izmeni', [NarudzbenicaController::class, 'izmeni']);
 Route::delete('/narudzbenice/obrisi-narudzbenicu', [NarudzbenicaController::class, 'obrisiNarudzbenicu']);
 
 Route::post('/narudzbenice/zapamtiUnos', [NarudzbenicaController::class, 'zapamtiUnos']);
+
+Route::post('/nacin/kreirajNacin', [NacinOtpremeController::class, 'kreirajNacinOtpreme']);
+Route::get('/nacin/vratiBroj', [NacinOtpremeController::class, 'vratiBrojNacOtp']);
+Route::delete('/nacin/obrisi', [NacinOtpremeController::class, 'obrisiNacinOtpreme']);
+Route::put('/nacin/izmeni', [NacinOtpremeController::class, 'izmeniNacinOtpreme']);

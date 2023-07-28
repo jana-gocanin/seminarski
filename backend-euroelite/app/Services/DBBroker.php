@@ -149,4 +149,49 @@ class DBBroker
             return false; // Narudžbenica sa datim ID-jem nije pronađena
         }
     }
+
+    //nacin otpreme
+    public function vratiBrojNacOtp()
+    {
+        $poslednjiBroj = NacinOtpreme::max('id');
+
+        return $poslednjiBroj;
+    }
+
+    public function izmeniNacinOtpreme(int $id, string $naziv)
+    {
+        try {
+            // Assuming you have a table named 'nacin_otpremes' for storing NacinOtpreme records
+            // Replace 'nacin_otpremes' with your actual table name if different
+            $nacin = NacinOtpreme::find($id);
+
+            if($nacin){
+                $nacin->naziv_nacina = $naziv;
+                $nacin->save();
+                return true;
+            }
+            // $affectedRows = DB::table('nacin_otpremes')
+            //     ->where('id', $id)
+            //     ->update(['naziv' => $naziv]);
+
+            // return $affectedRows > 0;
+        } catch (\Exception $e) {
+            // Handle the exception if needed
+            // For example, log the error: \Log::error($e->getMessage());
+            return false;
+        }
+    }
+
+    public function obrisiNacinOtpreme($id)
+    {
+        $nacin = NacinOtpreme::find($id);
+
+        if ($nacin) {
+            
+            $nacin->delete();
+            return true; 
+        } else {
+            return false; 
+        }
+    }
 }
