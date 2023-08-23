@@ -52,19 +52,15 @@ class NarudzbenicaController extends Controller
 
     public function vratiSveDobavljace()
     {
-        // Dobavljanje svih dobavljača iz baze podataka
         $dobavljaci = Dobavljac::all();
 
-        // Vraćanje rezultata
         return $dobavljaci;
     }
 
     public function vratiSveProizvode()
     {
-        // Dobavljanje svih proizvoda iz baze podataka
         $proizvodi = Proizvod::all();
 
-        // Vraćanje rezultata
         return $proizvodi;
     }
 
@@ -146,25 +142,19 @@ class NarudzbenicaController extends Controller
 
     public function pronadjiDobavljace(Request $request)
     {
-        // Pozivanje funkcije iz DBBroker klase
         $dobavljaci = $this->dbBroker->pronadjiDobavljace($request->naziv);
 
-        // Postavljanje rezultata na svojstvo RSDobavljaci
         $this->RSDobavljaci = $dobavljaci;
 
-        // Vraćanje rezultata
         return $dobavljaci;
     }
 
     public function izaberiDobavljaca($id)
     {
-        // Pozivanje funkcije iz DBBroker klase
         $dobavljac = $this->dbBroker->izaberiDobavljaca($id);
 
-        // Postavljanje svojstva $RSDobavljac na izabranog dobavljača
         $this->RSDobavljac = $dobavljac;
 
-        // Vraćanje izabranog dobavljača
         return $dobavljac;
 
         //eloquent orm svakako instancira dobavljaca
@@ -191,19 +181,16 @@ class NarudzbenicaController extends Controller
         $proizvodi = $this->dbBroker->pronadjiProizvode($request->nazivProiz);
         
         $this->RSProizvodi = $proizvodi;
-        // Vraćanje rezultata
         return $proizvodi;
     }
 
     public function izaberiProizvod(Request $request)
     {
-        $id = $request->sifraProizvoda; // da li je ovako??? name="sifraProizvoda" treba na frontu
+        $id = $request->sifraProizvoda; 
 
-        // Pozivanje funkcije iz DBBroker klase
         $proizvod = $this->dbBroker->izaberiProizvod($id);
 
 
-        // Vraćanje izabranog dobavljača
         return $proizvod;
     }
 
@@ -217,18 +204,14 @@ class NarudzbenicaController extends Controller
 
         // $stavka = $narudzbenica->kreirajStavku($proizvod, $kolicina);
 
-         // Provera da li je pronađen proizvod
     if ($proizvod) {
-        // Ako postoji proizvod, možete nastaviti sa kreiranjem stavke
         $kolicina = $request->kolicina;
         $stavka = $narudzbenica->kreirajStavku($proizvod, $kolicina, $brojNarudzbenice);
 
         $ukupno = $this->dajUkupanIznos($brojNarudzbenice);
 
-        // Uspesno zavrsena akcija
         return response()->json(['message' => 'Stavka uspesno dodata.', 'stavka'=> $stavka, 'proizvod'=>$stavka->proizvod, 'ukupno'=>$ukupno]);
     } else {
-        // Ako proizvod nije pronađen, vratite grešku
         return response()->json(['message' => 'Proizvod nije pronađen.'], 404);
     }
         // $narudzbenica->dodajUKolekciju($stavka);
@@ -237,11 +220,9 @@ class NarudzbenicaController extends Controller
 
     public function zapamtiUnos(Request $request)
     {
-        // Pretpostavka: Postoji kontroler sa svojstvom $brojNarudzbenice koje sadrži ID narudžbenice
         $brojNarudzbenice = $request->input('brojNarudzbenice');
          $narudzbenica = Narudzbenica::findOrFail($brojNarudzbenice);
 
-        // Pokrećemo transakciju
         $this->dbBroker->pokreniDBTransakciju();
 
         if ($narudzbenica) {
@@ -249,10 +230,7 @@ class NarudzbenicaController extends Controller
         } else {
             return response()->json(['message' => 'Nije inicijalizovana narudzbenica.']);
         }
-        // Čuvamo narudžbenicu i dobijamo rezultat
-        
 
-        // Proveravamo rezultat i potvrđujemo ili poništavamo transakciju
         if ($ret === true) {
             $this->dbBroker->potvrdiDBTransakciju();
             return response()->json(['message' => 'Uspešno sačuvana narudžbenica.']);
@@ -271,10 +249,8 @@ class NarudzbenicaController extends Controller
         // Provera da li je narudžbenica pronađena
         if ($narudzbenica) {
             $narudzbenica = Narudzbenica::with('stavke.proizvod', 'dobavljac', 'nacinOtpreme')->find($brojNarudzbenice); //da bih u odg dobila i sve stavke
-            // Ako je pronađena, vratite je kao JSON odgovor
             return response()->json($narudzbenica);
         } else {
-            // Ako nije pronađena, vratite odgovarajući JSON odgovor ili izvršite odgovarajuću obradu greške
             return response()->json(['message' => 'Narudžbenica nije pronađena.'], 404);
         }
     }
@@ -323,7 +299,6 @@ class NarudzbenicaController extends Controller
         $this->dbBroker->pokreniDBTransakciju();
 
     try {
-        // Brisanje narudžbenice
         $ret = $this->dbBroker->obrisiNarudzbenicu($brojNarudzbenice);
 
         if ($ret === true) {
@@ -334,10 +309,8 @@ class NarudzbenicaController extends Controller
             return response()->json(['message' => 'Greška prilikom brisanja narudžbenice.'], 500);
         }
     } catch (\Exception $e) {
-        // Poništavanje transakcije u slučaju greške
         $this->dbBroker->ponistiDBTransakciju();
 
-        // Vraćanje greške
         return response()->json(['message' => 'Greška prilikom brisanja narudžbenice.'], 500);
     }
     }

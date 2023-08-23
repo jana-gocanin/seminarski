@@ -43,7 +43,6 @@ const ObrisiFormaNar = () => {
   };
 
   useEffect(() => {
-    // Show the selection message for 2 seconds after izabraniProizvod changes
     if (showSelectionMessage) {
       setShowSelectionMessage(true);
       const timer = setTimeout(() => {
@@ -72,24 +71,16 @@ const ObrisiFormaNar = () => {
     e.preventDefault();
 
     try {
-      // Make a DELETE request to the API to delete the narudzbenica with the given ID (brojNarudzbenice)
       await axios.delete(
         `http://localhost:8000/api/narudzbenice/obrisi-narudzbenicu`,
         { data: { brojNarudzbenice: searchInput } }
       );
 
       setShowSelectionMessage(true);
-      // After successful deletion, you can perform any additional actions, such as clearing the form or showing a success message.
-      // For example, you can dispatch the action to delete the narudzbenica from the Redux store.
-      // dispatch(deleteNarudzbenica());
-
-      // Reset the search input
       setSearchInput("");
-      // Reset the form by dispatching necessary actions
       dispatch(deleteNarudzbenica());
       dispatch(deleteStavke());
     } catch (error) {
-      // Handle any errors that might occur during the API request
       console.error("Error deleting narudzbenica:", error);
     }
   };
@@ -117,14 +108,12 @@ const ObrisiFormaNar = () => {
         dispatch(setDobavljac(searchedNarudzbenica.dobavljac.naziv_dobavljaca));
         dispatch(setDobavljaci([]));
 
-        // Add the fetched stavke to the form state
         if (
           searchedNarudzbenica.stavke &&
           searchedNarudzbenica.stavke.length > 0
         ) {
           dispatch(
             setStavke(
-              // Assuming your addStavka action expects an object
               searchedNarudzbenica.stavke
             )
           );
@@ -133,7 +122,6 @@ const ObrisiFormaNar = () => {
         setSearchError("Narudžbenica sa datim brojem nije pronađena.");
       }
     } catch (error) {
-      // Handle any errors that might occur during the API request
       setSearchError("Narudzbenica ne postoji!", error);
     }
   };

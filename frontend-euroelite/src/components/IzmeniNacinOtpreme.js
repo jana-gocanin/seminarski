@@ -15,6 +15,7 @@ const IzmeniNacinOtpreme = () => {
     (state) => state.nacinOtpreme.naciniOtpreme
   );
   const dispatch = useDispatch();
+  const [nazivNacina, setNazivNacina] = useState("");
 
   const handleIzmenaNacinaOtpreme = (nacinOtpreme) => {
     setIzmenaNacinaOtpreme(nacinOtpreme.naziv);
@@ -47,7 +48,6 @@ const IzmeniNacinOtpreme = () => {
       });
 
       if (response.ok) {
-        // Dispatch the action to update the Redux state
         dispatch(setNacinOtpreme(updatedNacinOtpreme));
         setIzmenaNacinaOtpreme("");
         setIzabraniNacinOtpreme(null);
@@ -68,18 +68,22 @@ const IzmeniNacinOtpreme = () => {
     setIzabraniNacinOtpreme(null);
   };
 
+  const handleChangeNaziv = (e) => {
+    setNacinOtpreme(e.target.value);
+    
+  }
+
   const handleObrisiNacinOtpreme = async (nacinOtpreme) => {
     try {
       const response = await fetch(`${BASE_URL}/nacin/obrisi`, {
         method: "DELETE",
-        body: JSON.stringify({ id: nacinOtpreme.id }), // Assuming your API expects the "id" of the "nacinOtpreme" to be passed in the request body
+        body: JSON.stringify({ id: nacinOtpreme.id }), 
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       if (response.ok) {
-        // Dispatch the action to update the Redux state
         dispatch(removeNacinOtpreme(nacinOtpreme.id));
         console.log("Uspešno obrisan način otpreme.");
       } else {

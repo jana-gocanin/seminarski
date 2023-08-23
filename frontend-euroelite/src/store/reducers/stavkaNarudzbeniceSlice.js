@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  proizvod: "", // Dodali smo proizvod i kolicinu u stanje
+  proizvod: "",
   kolicina: "",
-  izabraniProizvod: null, // Dodali smo izabraniProizvod u stanje
+  izabraniProizvod: null,
   stavke: [
     {
       id: 0,
@@ -29,9 +29,9 @@ const stavkaNarudzbeniceSlice = createSlice({
       state.izabraniProizvod = action.payload;
     },
     deleteStavke: (state) => {
-      state.proizvod = ""; // Dodali smo proizvod i kolicinu u stanje
+      state.proizvod = "";
       state.kolicina = "";
-      state.izabraniProizvod = null; // Dodali smo izabraniProizvod u stanje
+      state.izabraniProizvod = null;
       state.stavke = [];
     },
 

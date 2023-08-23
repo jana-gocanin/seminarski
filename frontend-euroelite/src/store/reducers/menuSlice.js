@@ -1,22 +1,4 @@
-// import { createSlice } from "@reduxjs/toolkit";
 
-// const menuSlice = createSlice({
-//   name: "menu",
-//   initialState: {
-//     selectedOption: null,
-//   },
-//   reducers: {
-//     selectOption: (state, action) => {
-//       state.selectedOption = action.payload;
-//     },
-//   },
-// });
-
-// export const { selectOption } = menuSlice.actions;
-
-// export default menuSlice.reducer;
-
-// menuSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const menuSlice = createSlice({

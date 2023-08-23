@@ -81,13 +81,10 @@ const DodajStavkuForma = () => {
 
       const responseData = await response.json();
 
-      // Extract the stavka and proizvod data from the response
       const { stavka, proizvod } = responseData;
 
-      // Dispatch the action to add stavka to the Redux store
       dispatch(addStavka(stavka));
 
-      // Set izabraniProizvod to null in Redux store
       dispatch(setIzabraniProizvod(null));
       setProizvod(proizvod);
       setKolicina("");
@@ -104,7 +101,7 @@ const DodajStavkuForma = () => {
   const handlePronadjiProizvode = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/proizvodi/pronadji/${proizvod}`, // Zamijenite BASE_URL sa stvarnom baznom URL adresom vaše API rute
+        `${BASE_URL}/proizvodi/pronadji/${proizvod}`,
         {
           method: "GET",
           headers: {
@@ -180,7 +177,7 @@ const DodajStavkuForma = () => {
                   onClick={() => {
                     handleIzaberiProizvod(proizvod);
                   }}
-                  className={proizvod === izabraniProizvod ? "selected" : ""} // Ovde proveravamo da li je trenutni proizvod izabran
+                  className={proizvod === izabraniProizvod ? "selected" : ""} 
                 >
                   <td>{proizvod.id}</td>
                   <td>{proizvod.naziv_proizvoda}</td>
@@ -204,7 +201,7 @@ const DodajStavkuForma = () => {
             type="button"
             onClick={() => {
               handleIzaberiProizvodDetalji(izabraniProizvod);
-              setShowSelectionMessage(true); // Show the selection message
+              setShowSelectionMessage(true); 
             }}
           >
             Izaberi proizvod

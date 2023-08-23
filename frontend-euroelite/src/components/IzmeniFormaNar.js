@@ -51,13 +51,11 @@ const IzmeniFormaNar = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [searchError, setSearchError] = useState("");
 
-  // Function to reset the error message
   const resetSearchError = () => {
     setSearchError("");
   };
 
   useEffect(() => {
-    // Dohvati sve načine otpreme kada se komponenta montira
     dispatch(fetchNaciniOtpreme());
   }, [dispatch]);
 
@@ -87,21 +85,14 @@ const IzmeniFormaNar = () => {
         dispatch(setDobavljac(searchedNarudzbenica.dobavljac.naziv_dobavljaca));
         dispatch(setDobavljaci([]));
 
-        // Add the fetched stavke to the form state
         if (
           searchedNarudzbenica.stavke &&
           searchedNarudzbenica.stavke.length > 0
         ) {
-          dispatch(
-            setStavke(
-              // Assuming your addStavka action expects an object
-              searchedNarudzbenica.stavke
-            )
-          );
+          dispatch(setStavke(searchedNarudzbenica.stavke));
         }
       }
     } catch (error) {
-      // Handle any errors that might occur during the API request
       setSearchError("Error searching narudzbenica:", error);
     }
   };
@@ -129,7 +120,6 @@ const IzmeniFormaNar = () => {
     const newDatumNarudzbenice = e.target.value;
     dispatch(setDatumNarudzbenice(newDatumNarudzbenice));
 
-    // Make the API call to postaviDatumNar
     try {
       const response = await fetch(`${BASE_URL}/postaviDatumNar`, {
         method: "POST",
@@ -143,11 +133,9 @@ const IzmeniFormaNar = () => {
       });
 
       if (!response.ok) {
-        // Handle the error if needed
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      // Handle any network or fetch errors
       console.error("Error:", error);
     }
   };
@@ -160,7 +148,6 @@ const IzmeniFormaNar = () => {
     const racun = e.target.value;
     dispatch(setZiroRacun(racun));
 
-    // Make the API call to postaviDatumNar
     try {
       const response = await fetch(`${BASE_URL}/postaviZiroRacun`, {
         method: "POST",
@@ -174,11 +161,9 @@ const IzmeniFormaNar = () => {
       });
 
       if (!response.ok) {
-        // Handle the error if needed
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      // Handle any network or fetch errors
       console.error("Error:", error);
     }
   };
@@ -331,7 +316,6 @@ const IzmeniFormaNar = () => {
         return;
       }
 
-      // If the stavka is successfully deleted, update the state in Redux
       dispatch(removeStavka(stavkaId));
     } catch (error) {
       console.error("Error:", error);
@@ -342,7 +326,6 @@ const IzmeniFormaNar = () => {
     setEditedQuantity(stavka.kolicina);
     setEditedStavkaIndex(index);
 
-    // Dispatch Redux action to set the editing state
     dispatch(setEditedStavka({ index, isEditing: true }));
   };
 
@@ -374,14 +357,13 @@ const IzmeniFormaNar = () => {
       }
 
       const data = await response.json();
-      console.log(data.message); // Poruka sa servera, možete je koristiti ako je potrebno
+      console.log(data.message);
 
-      // Ažurirajte stavku sa novom količinom
       const updatedStavke = [...stavke];
       updatedStavke[editedStavkaIndex] = {
         ...stavka,
         kolicina: editedQuantity,
-        iznos: data.iznos, // Novi iznos koji ste dobili sa servera
+        iznos: data.iznos,
       };
       dispatch(
         updateStavka({
@@ -401,13 +383,11 @@ const IzmeniFormaNar = () => {
 
   const handleSubmit = async () => {
     if (!isFormValid()) {
-      // Show an error message or take appropriate action for invalid form
       console.error("Form is not valid. Please fill in all required fields.");
       return;
     }
 
     try {
-      // Call the API route http://localhost:8000/api/narudzbenice/zapamtiUnos
       const response = await fetch(`${BASE_URL}/narudzbenice/zapamtiUnos`, {
         method: "POST",
         headers: {
@@ -429,7 +409,6 @@ const IzmeniFormaNar = () => {
         return;
       }
 
-      // Handle the success response or any other necessary actions
       console.log("Form data saved successfully!");
       dispatch(deleteNarudzbenica());
       dispatch(deleteStavke());

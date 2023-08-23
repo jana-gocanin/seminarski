@@ -16,13 +16,15 @@ const KreirajNacinOtpreme = () => {
   const nazivNacinaOtpreme = useSelector(
     (state) => state.nacinOtpreme.nacinOtpreme
   );
+  const handleChangeNaziv = (e) => {
+    setNazivNacina(e.target.value);
+  };
 
   const handleSacuvajNacinOtpreme = async () => {
-    // Opciono: Pozovite API rutu za kreiranje načina otpreme
     try {
       const response = await fetch(`${BASE_URL}/nacin/kreirajNacin`, {
         method: "POST",
-        body: JSON.stringify({ naziv: nazivNacinaOtpreme }),
+        body: JSON.stringify({ naziv: nazivNacina }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -45,6 +47,7 @@ const KreirajNacinOtpreme = () => {
     dispatch(setBrojNacinaOtpreme(brojNacinaOtpreme + 1));
   };
 
+  const [nazivNacina, setNazivNacina] = useState("");
   return (
     <div className="container-otprema">
       <h2>Kreiraj Način Otpreme</h2>
@@ -60,11 +63,7 @@ const KreirajNacinOtpreme = () => {
         </div>
         <div className="form-group">
           <label>Naziv načina otpreme:</label>
-          <input
-            type="text"
-            value={nazivNacinaOtpreme}
-            onChange={(e) => dispatch(setNacinOtpreme(e.target.value))}
-          />
+          <input type="text" value={nazivNacina} onChange={handleChangeNaziv} />
         </div>
         <button type="button" onClick={handleSacuvajNacinOtpreme}>
           Sačuvaj
